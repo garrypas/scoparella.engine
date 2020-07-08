@@ -6,6 +6,7 @@ import {
 import { Card } from "./Card";
 import { Face } from "./Face";
 import { Suit } from "./Suit";
+import { ComparableArray } from "../core/ComparableArray";
 
 describe("Table tests", () => {
     let _table: Table;
@@ -49,7 +50,7 @@ describe("Table tests", () => {
     });
 
     it("remove() throws error if the card isn't on the table", () => {
-        expect(() => _table.remove([new Card(Face.Five, Suit.Clubs)])).to.throw(CARDS_NOT_ON_TABLE);
+        expect(() => _table.remove(new Card(Face.Five, Suit.Clubs))).to.throw(CARDS_NOT_ON_TABLE);
     });
 
     it("removeAll() removes all cards from the table", () => {
@@ -71,5 +72,12 @@ describe("Table tests", () => {
 
     it("add() throws error if the card is already on the table", () => {
         expect(() => _table.add(_card1)).to.throw(`The card with the face ${_card1.face} and suit ${_card1.suit} is already on the table`);
+    });
+
+    it("fromObject() makes a copy of the Table instance", () => {
+        const card5: Card = new Card(Face.Two, Suit.Clubs);
+        _table.add(card5);
+        const tableAfter = Table.fromObject(JSON.parse(JSON.stringify(_table)));
+        expect(ComparableArray.allMatch(tableAfter.cards, _table.cards)).to.be.true;
     });
 });

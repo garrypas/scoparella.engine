@@ -6,13 +6,8 @@ import { createSandbox, SinonSandbox } from "sinon";
 describe("Player tests", () => {
     let _sandbox: SinonSandbox;
 
-    beforeEach(() => {
-        _sandbox = createSandbox();
-    });
-
-    afterEach(() => {
-        _sandbox.restore();
-    });
+    beforeEach(() =>  _sandbox = createSandbox());
+    afterEach(() => _sandbox.restore());
 
     describe("generateId()", () => {
         let _player: Player;
@@ -37,9 +32,7 @@ describe("Player tests", () => {
         beforeEach(() => {
             const ids = ["p2", "p1", "p1"];
             _sandbox.stub(IdGenerator, "generateId").callsFake(() => ids.pop() || "");
-            _player1 = new Player();
-            _player1Copy = new Player();
-            _player2 = new Player();
+            [ _player1, _player1Copy, _player2 ] = [ new Player(), new Player(), new Player() ];
         });
 
         it("is true when players match", () => {
@@ -49,5 +42,11 @@ describe("Player tests", () => {
         it("is false when players do not match", () => {
             expect(_player1.equals(_player2)).not.to.be.true;
         });
+    });
+
+    it("fromObject() makes a copy of the Player instance", () => {
+        const player = new Player();
+        const playerAfter = Player.fromObject(JSON.parse(JSON.stringify(player)));
+        expect(playerAfter.id).equal(player.id);
     });
 });

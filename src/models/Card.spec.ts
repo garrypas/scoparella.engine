@@ -49,5 +49,24 @@ describe("Card tests", function () {
     it("sumFaces() sums", () => {
         const sum = Card.sumFaces([new Card(Face.Two, Suit.Clubs), new Card(Face.Ace, Suit.Swords)]);
         expect(sum).to.equal(3);
-    })
+    });
+
+    describe("fromObject()", () => {
+        it("makes a copy of the Card instance", () => {
+            const cardAfter = Card.fromObject(JSON.parse(JSON.stringify(_card)));
+            expect(cardAfter.face).equal(_card.face);
+            expect(cardAfter.suit).equal(_card.suit);
+        });
+    });
+
+    describe("fromArray()", () => {
+        it("makes a copy of the Card instance", () => {
+            const cardOther = new Card(Face.Four, Suit.Coins);
+            const cards = Card.fromArray([ _card,  cardOther ]);
+            expect(cards[0].face).equal(_card.face);
+            expect(cards[0].suit).equal(_card.suit);
+            expect(cards[1].face).equal(cardOther.face);
+            expect(cards[1].suit).equal(cardOther.suit);
+        });
+    });
 });

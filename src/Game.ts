@@ -10,6 +10,7 @@ import { Card } from "./models/Card";
 import { Scoreboard } from "./scoring/Scoreboard";
 import { RuleEngine } from "./rules/RuleEngine";
 import { PlayCardValidationResult } from "./rules/PlayCardValidationResult";
+import { fromJson } from "./utils/fromJson";
 
 export class Game {
     private _deck: Deck;
@@ -44,6 +45,10 @@ export class Game {
         return this._table;
     }
 
+    get lastTaker(): Hand | undefined {
+        return this._lastTaker;
+    }
+
     scopas(player: Player): Card[] {
         return this._scoreboard.getScopas(player);
     }
@@ -61,22 +66,21 @@ export class Game {
     }
 
     get status(): GameStatus {
+        let status = GameStatus.READY_TO_START;
         if(this._hands.length !== this._config.numberOfPlayers) {
-            return GameStatus.WAITING_FOR_PLAYERS;
+            status = GameStatus.WAITING_FOR_PLAYERS;
         }
-        if(this._deck.cards.length === 0 && this._table.length === 0) {
-            return GameStatus.ENDED;
+        if(this._deck.length === 0 && this._table.length === 0) {
+            status = GameStatus.ENDED;
         }
-        if(this._deck.cards.length < 40) {
-            return GameStatus.IN_PROGRESS;
+        if(this._deck.length < 40) {
+            status = GameStatus.IN_PROGRESS;
         }
-        return GameStatus.READY_TO_START;
+        return status;
     }
 
     private dealRoundOfCardsToEachPlayer() {
-        this._hands.forEach(hand => {
-            Array.prototype.push.apply(hand.cards, this._deck.take(3));
-        });
+        this._hands.forEach(hand => hand.add(this._deck.take(3)));
     }
 
     private start() {
@@ -109,7 +113,7 @@ export class Game {
 
         this.moveTurnToNextPlayer();
 
-        if(this.allHandsAreEmpty() && this._deck.cards.length === 0) {
+        if(this.allHandsAreEmpty() && this._deck.length === 0) {
             this.giveTableToLastTaker();
             this.updateScorecard();
             this.endRound();
@@ -117,12 +121,10 @@ export class Game {
     }
 
     private playCards(cardToPlay: Card, cardsToTake: Card[], hand: Hand) {
-        this._table.remove(cardsToTake).forEach(removed => {
-            hand.captured.push(removed);
-        });
+        hand.capture(this._table.remove(cardsToTake));
         const removed = hand.remove(cardToPlay);
         if (cardsToTake.length > 0) {
-            hand.captured.push(removed);
+            hand.capture(removed);
         }
         else {
             this._table.add(removed);
@@ -132,7 +134,7 @@ export class Game {
             this._lastTaker = hand;
         }
 
-        if (this.allHandsAreEmpty() && this._deck.cards.length > 0) {
+        if (this.allHandsAreEmpty() && this._deck.length > 0) {
             this.dealRoundOfCardsToEachPlayer();
         }
     }
@@ -156,7 +158,7 @@ export class Game {
     }
 
     private giveTableToLastTaker() {
-        this._table.removeAll().forEach(card => this._lastTaker?.captured.push(card));
+        this._lastTaker?.capture(this._table.removeAll());
     }
 
     private updateScorecard() {
@@ -190,6 +192,30 @@ export class Game {
             this._whoseTurn = this._hands[0];
             this.start();
         }
+    }
+
+    static fromJson(json: string): Game {
+        return fromJson(json, gameObj => {
+            return this.fromObject(gameObj)
+        });
+    }
+
+    static fromObject(jsonObj: Game): Game {
+        const game = new Game({
+            numberOfPlayers: jsonObj._config.numberOfPlayers,
+            scoreboard: Scoreboard.fromObject(jsonObj._scoreboard)
+        });
+        game._deck = Deck.fromObject(jsonObj._deck as Deck);
+        game._hands = Hand.fromArray(jsonObj._hands);
+        game._table = Table.fromObject(jsonObj._table);
+        if(jsonObj._lastTaker) {
+            game._lastTaker = Hand.fromObject(jsonObj._lastTaker);
+        }
+        game._roundsPlayed = jsonObj._roundsPlayed;
+        if(jsonObj._whoseTurn) {
+            game._whoseTurn = Hand.fromObject(jsonObj._whoseTurn);
+        }
+        return game;
     }
 }
 

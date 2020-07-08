@@ -2,14 +2,12 @@
 import { 
     CANNOT_ADD_MORE_PLAYERS_ERROR,
     NOT_THIS_PLAYERS_TURN,
+    Game,
 } from "./Game";
 import { expect } from "chai";
 import { Player } from "./models/Player";
 import { GameStatus } from "./models/GameStatus";
 import { GameBuilder } from "./test-utils/GameBuilder";
-import { Card } from "./models/Card";
-import { Face } from "./models/Face";
-import { Suit } from "./models/Suit";
 import { CARDS_NOT_ON_TABLE } from "./models/Table";
 import { RuleEngine } from "./rules/RuleEngine";
 import { SinonSpy, SinonSandbox, createSandbox } from "sinon";
@@ -117,7 +115,7 @@ describe("Game tests", () => {
             .addTwoPlayers()
             .playToEnd()
             .build();
-        expect(game.deck.remaining).to.equal(30);
+        expect(game.deck).to.have.lengthOf(30);
     });
 
     it("When game is ended cards are dealt to each player ready for the next round", () => {
@@ -146,8 +144,7 @@ describe("Game tests", () => {
         for(let i = 0; i < 18; i++) {
             game.tryPlayCards(game.hands[0].cards[0], [ ], game.hands[0]);
             if(i === 0) {
-                const knightOfCups = game.hands[1].cards[2];
-                const knightOfSwords = game.table.cards[0];
+                const [ knightOfCups, knightOfSwords ] = [ game.hands[1].cards[2], game.table.cards[0] ];
                 game.tryPlayCards(knightOfCups, [ knightOfSwords ], game.hands[1]);
             } else{
                 game.tryPlayCards(game.hands[1].cards[0], [ ], game.hands[1]);
@@ -213,9 +210,7 @@ describe("Game tests", () => {
 
     it("Fails to take requested cards when they are not on the table", () => {
         const game = _gameBuilder.addTwoPlayers().build();
-        expect(() =>
-            game.tryPlayCards(game.hands[0].cards[0], [ new Card(Face.Six, Suit.Clubs)  ], game.hands[0])
-        ).to.throw(CARDS_NOT_ON_TABLE);
+        expect(() => game.tryPlayCards(game.hands[0].cards[0], [ game.hands[0].cards[0] ], game.hands[0])).to.throw(CARDS_NOT_ON_TABLE);
     });
 
     it("Puts card on table if it cannot be used to capture", () => {
@@ -236,7 +231,7 @@ describe("Game tests", () => {
             .addTwoPlayers()
             .playSingleRound()
             .build();
-        expect(game.deck.remaining).to.equal(24);
+        expect(game.deck).to.have.lengthOf(24);
         expect(game.hands[0].cards).to.be.lengthOf(3);
         expect(game.hands[1].cards).to.be.lengthOf(3);
     });
@@ -273,5 +268,22 @@ describe("Game tests", () => {
             .addTwoPlayers()
             .build();
         expect(() => game.tryPlayCards(game.hands[0].cards[0], game.table.cards, game.hands[0])).to.throw(PlayCardValidationResult.INVALID);
+    });
+
+    it("JSON serialization/deserialization", () => {
+        const gameBefore = _gameBuilder
+            .addTwoPlayers()
+            .playHands(2)
+            .build();
+        const gameAfter: Game = Game.fromJson(JSON.stringify(gameBefore));
+        expect(gameAfter.deck).not.to.be.undefined;
+        expect(gameAfter.hands).not.to.be.undefined;
+        expect(gameAfter.lastTaker).to.equal(gameBefore.lastTaker);
+        expect(gameAfter.roundsPlayed).to.equal(gameBefore.roundsPlayed);
+        expect(gameAfter.status).not.to.be.undefined;
+        expect(gameAfter.status).to.equal(GameStatus.IN_PROGRESS);
+        expect(gameAfter.table).not.to.be.undefined;
+        expect(gameAfter.table).to.have.lengthOf(gameBefore.table.cards.length);
+        expect(gameAfter.whoseTurn).not.to.be.undefined;
     });
 });

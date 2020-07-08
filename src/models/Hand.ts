@@ -1,5 +1,6 @@
 import { Card } from "./Card";
 import { Player } from "./Player";
+import { ComparableArray } from "../core/ComparableArray";
 
 export class Hand {
     private _cards: Card[];
@@ -13,7 +14,7 @@ export class Hand {
     }
 
     get cards(): Card[] {
-        return this._cards;
+        return this._cards.slice();
     }
 
     get player(): Player {
@@ -21,7 +22,21 @@ export class Hand {
     }
 
     get captured(): Card[] {
-        return this._captured;
+        return this._captured.slice();
+    }
+
+    add(card: Card | Card[]) {
+        if(!Array.isArray(card)) {
+            card = [card];
+        }
+        this._cards.push(...card);
+    }
+
+    capture(card: Card | Card[]) {
+        if(!Array.isArray(card)) {
+            card = [card];
+        }
+        this._captured.push(...card);
     }
 
     equals(other: Hand): boolean {
@@ -29,7 +44,7 @@ export class Hand {
     }
 
     hasCard(cardToCheck: Card): boolean {
-        return !!this.cards.find(handCard => handCard.equals(cardToCheck));
+        return ComparableArray.hasItem(cardToCheck, this._cards);
     }
 
     remove(card: Card): Card {
@@ -38,5 +53,16 @@ export class Hand {
             throw new Error(`Could not play ${card.face} of ${card.suit}. It is not in this player's hand.`);
         }
         return this._cards.splice(cardToPlayIndex, 1)[0];
+    }
+
+    static fromObject(jsonObj: Hand): Hand {
+        const hand = new Hand(Player.fromObject(jsonObj._player));
+        hand._captured = Card.fromArray(jsonObj._captured);
+        hand._cards = Card.fromArray(jsonObj._cards);
+        return hand;
+    }
+
+    static fromArray(hands: Hand[]): Hand[] {
+        return hands.map(hand => this.fromObject(hand));
     }
 }

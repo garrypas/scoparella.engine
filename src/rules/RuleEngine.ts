@@ -1,10 +1,11 @@
 import { Card } from "../models/Card";
 import { PlayCardValidationResult } from "./PlayCardValidationResult";
 import { getFaceValue } from "../models/Face";
+import { ComparableArray } from "../core/ComparableArray";
 
 export class RuleEngine {
     validPlay(cardToPlay: Card, cardsToTake: Card[], cardsOnTable: Card[]) : PlayCardValidationResult {
-        if(!cardsToTake.every(cardToTake => cardsOnTable.find(onTable => onTable.equals(cardToTake)))) {
+        if(!ComparableArray.isSubset(cardsToTake, cardsOnTable)) {
             return PlayCardValidationResult.TABLE_MISSING_REQUESTED_CARDS;
         }
         return cardsToTake.length > 0
@@ -59,6 +60,5 @@ function isExactMatch(cardToPlay: Card, cardsToTake: Card[]): boolean {
 }
 
 function sumOfFacesMatches(cardToPlay: Card, cardsToTake: Card[]) {
-    const faceOfPlayed = getFaceValue(cardToPlay.face);
-    return faceOfPlayed === Card.sumFaces(cardsToTake);
+    return getFaceValue(cardToPlay.face) === Card.sumFaces(cardsToTake);
 }

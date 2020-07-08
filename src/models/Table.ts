@@ -1,4 +1,5 @@
 import { Card } from "./Card";
+import { ComparableArray } from "../core/ComparableArray";
 
 export class Table {
     private _cards: Card[];
@@ -18,12 +19,14 @@ export class Table {
         this._cards.push(cardToAdd);
     }
 
-    remove(cards: Card[]) : Card[] {
-        if(!this.hasAllCards(cards)) {
+    remove(card: Card | Card[]) : Card[] {
+        if(!Array.isArray(card)) {
+            card = [card];
+        }
+        if(!ComparableArray.isSubset(card, this._cards)) {
             throw new Error(CARDS_NOT_ON_TABLE);
         }
-
-        return cards.filter(toRemove => {
+        return card.filter(toRemove => {
             const index = this._cards.findIndex(card => card.equals(toRemove));
             return this._cards.splice(index, 1)[0];
         });
@@ -37,12 +40,14 @@ export class Table {
         cards.forEach(c => this._cards.push(c));
     }
 
-    hasAllCards(cardsToTake: Card[]): boolean {
-        return cardsToTake.every(toTake => this.cards.findIndex(t => t.face === toTake.face && t.suit === toTake.suit) >= 0);
-    }
-
     get length(): number {
         return this._cards.length;
+    }
+
+    static fromObject(jsonObj: Table): Table {
+        const table = new Table();
+        table._cards = Card.fromArray(jsonObj._cards);
+        return table;
     }
 }
 

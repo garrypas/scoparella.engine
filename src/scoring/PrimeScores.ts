@@ -6,7 +6,7 @@ import { Card } from "../models/Card";
 import { Face } from "../models/Face";
 import { CardScoringComparison } from "./CardScoringComparison";
 
-const FACE_SCORES = [
+export const FACE_SCORES = [
     { face: Face.Seven,     score: 21 },
     { face: Face.Six,       score: 18 },
     { face: Face.Ace,       score: 16 },

@@ -7,10 +7,8 @@ import { expect } from "chai";
 
 describe("ScopaScore tests", () => {
     it("Counts scopas", () => {
-        const player1 = new Player();
-        const player2 = new Player();
         const score = ScopaScore.scoreScopas(
-            [ player1, player2 ],
+            [ new Player(), new Player() ],
             [
                 [ new Card(Face.Ace, Suit.Clubs), new Card(Face.Two, Suit.Clubs) ],
                 []

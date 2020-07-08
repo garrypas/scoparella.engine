@@ -21,4 +21,8 @@ export class Score {
     set score(score: number) {
         this._score = score;
     }
+
+    static fromObject(jsonObj: Score): Score {
+        return new Score(Player.fromObject(jsonObj._player), jsonObj._score);
+    }
 }

@@ -31,7 +31,13 @@ export class Deck {
         return cards;
     }
 
-    get remaining(): number {
+    get length(): number {
         return this._deck.length;
+    }
+
+    static fromObject(jsonObj: Deck): Deck {
+        const deck = new Deck();
+        deck._deck = jsonObj._deck.map(cardJsonObj => Card.fromObject(cardJsonObj))
+        return deck;
     }
 }

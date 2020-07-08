@@ -51,8 +51,7 @@ describe("Scoreboard tests", () => {
     });
 
     it("addScopa() adds a point to the score", () => {
-        const hand1 = new Hand(new Player());
-        const hand2 = new Hand(new Player());
+        const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.addScopa(hand2.player, new Card(Face.Ace, Suit.Clubs));
@@ -71,8 +70,7 @@ describe("Scoreboard tests", () => {
     });
 
     it("calculateScore() calls score calculators", () => {
-        const hand1 = new Hand(new Player());
-        const hand2 = new Hand(new Player());
+        const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([hand1, hand2]);
@@ -80,8 +78,7 @@ describe("Scoreboard tests", () => {
     });
 
     it("calculateScore() scores scopas", () => {
-        const hand1 = new Hand(new Player());
-        const hand2 = new Hand(new Player());
+        const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([hand1, hand2]);
@@ -89,8 +86,7 @@ describe("Scoreboard tests", () => {
     });
 
     it("calculateScore() return scores only for this round", () => {
-        const hand1 = new Hand(new Player());
-        const hand2 = new Hand(new Player());
+        const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([ hand1, hand2 ]);
@@ -100,8 +96,7 @@ describe("Scoreboard tests", () => {
     });
 
     it("score() returns scores", () => {
-        const hand1 = new Hand(new Player());
-        const hand2 = new Hand(new Player());
+        const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([ hand1, hand2 ]);
@@ -110,8 +105,7 @@ describe("Scoreboard tests", () => {
     });
 
     it("score() returns scores when multiple calculations have been performed", () => {
-        const hand1 = new Hand(new Player());
-        const hand2 = new Hand(new Player());
+        const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([ hand1, hand2 ]);

@@ -1,8 +1,9 @@
 import { Suit } from "./Suit";
 import { Face, getFaceValue } from "./Face";
 import { getCombinations } from "../utils/getCombinations";
+import { IComparable } from "../core/IComparable";
 
-export class Card { 
+export class Card implements IComparable { 
     private _face: Face;
     private _suit: Suit;
 
@@ -37,5 +38,13 @@ export class Card {
 
     static sumFaces(cards: Card[]) {
         return cards.map(c => getFaceValue(c._face)).reduce((x, y) => x + y);
+    }
+
+    static fromObject(jsonObj: Card): Card {
+        return new Card(jsonObj._face, jsonObj._suit);
+    }
+
+    static fromArray(arr: Card[]): Card[] {
+        return arr.map(c => this.fromObject(c));
     }
 }
