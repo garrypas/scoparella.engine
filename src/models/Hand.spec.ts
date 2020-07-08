@@ -75,14 +75,14 @@ describe("Hand tests", function () {
         });
     });
 
-    describe("fromObject() makes a copy of the Hand cardsinstance", () => {
+    describe("fromDto() makes a copy of the Hand cardsinstance", () => {
         let _handAfter: Hand;
         let _card1: Card, _card2: Card, card3: Card;
         beforeEach(() => {
             [ _card1, _card2, card3 ] = [ new Card(Face.Ace, Suit.Clubs), new Card(Face.Two, Suit.Clubs), new Card(Face.Five, Suit.Clubs) ]
             _hand.add([_card1, _card2]);
             _hand.capture(card3)
-            _handAfter = Hand.fromObject(JSON.parse(JSON.stringify(_hand)));
+            _handAfter = Hand.fromDto(Hand.toDto(_hand));
         });
 
         it("cards serialized/deserialized", () => {

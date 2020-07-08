@@ -1,5 +1,6 @@
 import { IdGenerator } from "../utils/IdGenerator"
 import { IComparable } from "../core/IComparable";
+import { IPlayerDto } from "../dtos/IPlayerDto";
 
 export class Player implements IComparable {
     private _id: string;
@@ -14,9 +15,15 @@ export class Player implements IComparable {
         return this._id === other._id;
     }
 
-    static fromObject(jsonObj: Player): Player {
+    static fromDto(jsonObj: IPlayerDto): Player {
         const player = new Player();
-        player._id = jsonObj._id;
+        player._id = jsonObj.id;
         return player;
+    }
+
+    static toDto(obj: Player): IPlayerDto {
+        return {
+            id: obj.id
+        };
     }
 }

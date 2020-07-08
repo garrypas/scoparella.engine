@@ -51,18 +51,18 @@ describe("Card tests", function () {
         expect(sum).to.equal(3);
     });
 
-    describe("fromObject()", () => {
+    describe("fromDto()", () => {
         it("makes a copy of the Card instance", () => {
-            const cardAfter = Card.fromObject(JSON.parse(JSON.stringify(_card)));
+            const cardAfter = Card.fromDto({ face: _card.face, suit: _card.suit });
             expect(cardAfter.face).equal(_card.face);
             expect(cardAfter.suit).equal(_card.suit);
         });
     });
 
-    describe("fromArray()", () => {
+    describe("fromDtoArray()", () => {
         it("makes a copy of the Card instance", () => {
             const cardOther = new Card(Face.Four, Suit.Coins);
-            const cards = Card.fromArray([ _card,  cardOther ]);
+            const cards = Card.fromDtoArray([ _card,  cardOther ]);
             expect(cards[0].face).equal(_card.face);
             expect(cards[0].suit).equal(_card.suit);
             expect(cards[1].face).equal(cardOther.face);

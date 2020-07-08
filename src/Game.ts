@@ -11,10 +11,11 @@ import { Scoreboard } from "./scoring/Scoreboard";
 import { RuleEngine } from "./rules/RuleEngine";
 import { PlayCardValidationResult } from "./rules/PlayCardValidationResult";
 import { fromJson } from "./utils/fromJson";
+import { IGameDto } from "./dtos/IGameDto";
 
 export class Game {
     private _deck: Deck;
-    private _config: GameConfig;
+    private _numberOfPlayers: number;
     private _hands: Hand[];
     private _table: Table;
     private _lastTaker: Hand | undefined;
@@ -25,7 +26,7 @@ export class Game {
 
     constructor(config: GameConfig) {
         this._deck = new Deck();
-        this._config = config;
+        this._numberOfPlayers = config.numberOfPlayers;
         this._hands = [];
         this._table = new Table();
         this._scoreboard = config.scoreboard || new Scoreboard();
@@ -67,13 +68,13 @@ export class Game {
 
     get status(): GameStatus {
         let status = GameStatus.READY_TO_START;
-        if(this._hands.length !== this._config.numberOfPlayers) {
+        if(this._hands.length !== this._numberOfPlayers) {
             status = GameStatus.WAITING_FOR_PLAYERS;
         }
         if(this._deck.length === 0 && this._table.length === 0) {
             status = GameStatus.ENDED;
         }
-        if(this._deck.length < 40) {
+        if(this._deck.length < 40 && !this._hands.every(h => h.cards.length === 0)) {
             status = GameStatus.IN_PROGRESS;
         }
         return status;
@@ -183,12 +184,12 @@ export class Game {
     }
 
     addPlayer(player: Player) {
-        if(this._hands.length + 1 > this._config.numberOfPlayers) {
+        if(this._hands.length + 1 > this._numberOfPlayers) {
             throw new Error(CANNOT_ADD_MORE_PLAYERS_ERROR);
         }
         this._hands.push(new Hand(player));
         this._scoreboard.add(player);
-        if(this._hands.length == this._config.numberOfPlayers) {
+        if(this._hands.length == this._numberOfPlayers) {
             this._whoseTurn = this._hands[0];
             this.start();
         }
@@ -196,26 +197,40 @@ export class Game {
 
     static fromJson(json: string): Game {
         return fromJson(json, gameObj => {
-            return this.fromObject(gameObj)
+            return this.fromDto(gameObj)
         });
     }
 
-    static fromObject(jsonObj: Game): Game {
+    static fromDto(jsonObj: IGameDto): Game {
         const game = new Game({
-            numberOfPlayers: jsonObj._config.numberOfPlayers,
-            scoreboard: Scoreboard.fromObject(jsonObj._scoreboard)
+            numberOfPlayers: jsonObj.numberOfPlayers,
+            scoreboard: Scoreboard.fromDto(jsonObj.scoreboard)
         });
-        game._deck = Deck.fromObject(jsonObj._deck as Deck);
-        game._hands = Hand.fromArray(jsonObj._hands);
-        game._table = Table.fromObject(jsonObj._table);
-        if(jsonObj._lastTaker) {
-            game._lastTaker = Hand.fromObject(jsonObj._lastTaker);
+        game._deck = Deck.fromDto(jsonObj.deck);
+        game._hands = Hand.fromDtoArray(jsonObj.hands);
+        game._table = Table.fromDto(jsonObj.table);
+        if(jsonObj.lastTaker) {
+            game._lastTaker = Hand.fromDto(jsonObj.lastTaker);
         }
-        game._roundsPlayed = jsonObj._roundsPlayed;
-        if(jsonObj._whoseTurn) {
-            game._whoseTurn = Hand.fromObject(jsonObj._whoseTurn);
+        game._roundsPlayed = jsonObj.roundsPlayed;
+        if(jsonObj.whoseTurn) {
+            game._whoseTurn = Hand.fromDto(jsonObj.whoseTurn);
         }
+        game._numberOfPlayers = jsonObj.numberOfPlayers;
         return game;
+    }
+
+    static toDto(obj: Game): IGameDto {
+        return {
+            deck: Deck.toDto(obj._deck),
+            hands: Hand.toDtoArray(obj._hands),
+            lastTaker: obj._lastTaker ? Hand.toDto(obj._lastTaker): undefined,
+            numberOfPlayers: obj._numberOfPlayers,
+            roundsPlayed: obj._roundsPlayed,
+            scoreboard: Scoreboard.toDto(obj._scoreboard),
+            table: Table.toDto(obj._table),
+            whoseTurn: obj._whoseTurn ? Hand.toDto(obj._whoseTurn): undefined
+        };
     }
 }
 

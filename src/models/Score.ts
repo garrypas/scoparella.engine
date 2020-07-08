@@ -1,4 +1,5 @@
 import { Player } from "./Player";
+import { IScoreDto } from "../dtos/IScoreDto";
 
 export class Score {
     private _player: Player;
@@ -22,7 +23,18 @@ export class Score {
         this._score = score;
     }
 
-    static fromObject(jsonObj: Score): Score {
-        return new Score(Player.fromObject(jsonObj._player), jsonObj._score);
+    static fromDto(jsonObj: IScoreDto): Score {
+        return new Score(Player.fromDto(jsonObj.player), jsonObj.score);
+    }
+
+    static toDto(obj: Score): IScoreDto {
+        return {
+            player: Player.toDto(obj._player),
+            score: obj._score
+        };
+    }
+
+    static toDtoArray(arr: Score[]): IScoreDto[] {
+        return arr.map(this.toDto);
     }
 }

@@ -2,6 +2,7 @@ import { Card } from "./Card";
 import { Face } from "./Face";
 import { Suit } from "./Suit";
 import { RandomNumberRangeGenerator } from "../utils/RandomNumberRangeGenerator";
+import { IDeckDto } from "../dtos/IDeckDto";
 
 export class Deck {
     private _deck: Card[];
@@ -35,9 +36,15 @@ export class Deck {
         return this._deck.length;
     }
 
-    static fromObject(jsonObj: Deck): Deck {
+    static fromDto(jsonObj: IDeckDto): Deck {
         const deck = new Deck();
-        deck._deck = jsonObj._deck.map(cardJsonObj => Card.fromObject(cardJsonObj))
+        deck._deck = jsonObj.deck.map(cardJsonObj => Card.fromDto(cardJsonObj))
         return deck;
+    }
+
+    static toDto(obj: Deck): IDeckDto {
+        return {
+            deck: Card.toDtoArray(obj._deck)
+        }
     }
 }

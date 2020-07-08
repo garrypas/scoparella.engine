@@ -47,11 +47,11 @@ describe("Deck tests", function () {
         expect(_deck.length).to.equal(34);
     });
 
-    describe("fromObject() makes a copy of the Hand cardsinstance", () => {
+    describe("fromDto() makes a copy of the Hand cards instance", () => {
         let _deckAfter: Deck;
         beforeEach(() => {
             _deck.take(10);
-            _deckAfter = Deck.fromObject(JSON.parse(JSON.stringify(_deck)));
+            _deckAfter = Deck.fromDto(Deck.toDto(_deck));
         });
 
         it("cards serialized/deserialized", () => {

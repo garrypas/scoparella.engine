@@ -74,10 +74,10 @@ describe("Table tests", () => {
         expect(() => _table.add(_card1)).to.throw(`The card with the face ${_card1.face} and suit ${_card1.suit} is already on the table`);
     });
 
-    it("fromObject() makes a copy of the Table instance", () => {
+    it("fromDto() makes a copy of the Table instance", () => {
         const card5: Card = new Card(Face.Two, Suit.Clubs);
         _table.add(card5);
-        const tableAfter = Table.fromObject(JSON.parse(JSON.stringify(_table)));
+        const tableAfter = Table.fromDto(Table.toDto(_table));
         expect(ComparableArray.allMatch(tableAfter.cards, _table.cards)).to.be.true;
     });
 });

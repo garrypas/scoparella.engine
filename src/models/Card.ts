@@ -2,6 +2,7 @@ import { Suit } from "./Suit";
 import { Face, getFaceValue } from "./Face";
 import { getCombinations } from "../utils/getCombinations";
 import { IComparable } from "../core/IComparable";
+import { ICardDto } from "../dtos/ICardDto";
 
 export class Card implements IComparable { 
     private _face: Face;
@@ -40,11 +41,19 @@ export class Card implements IComparable {
         return cards.map(c => getFaceValue(c._face)).reduce((x, y) => x + y);
     }
 
-    static fromObject(jsonObj: Card): Card {
-        return new Card(jsonObj._face, jsonObj._suit);
+    static fromDto(jsonObj: ICardDto): Card {
+        return new Card(jsonObj.face as Face, jsonObj.suit as Suit);
     }
 
-    static fromArray(arr: Card[]): Card[] {
-        return arr.map(c => this.fromObject(c));
+    static toDto(obj: Card): ICardDto {
+        return { face: obj._face, suit: obj.suit };
+    }
+
+    static fromDtoArray(arr: ICardDto[]): Card[] {
+        return arr.map(this.fromDto);
+    }
+
+    static toDtoArray(arr: Card[]): ICardDto[] {
+        return arr.map(this.toDto);
     }
 }

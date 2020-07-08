@@ -44,9 +44,9 @@ describe("Player tests", () => {
         });
     });
 
-    it("fromObject() makes a copy of the Player instance", () => {
+    it("fromDto() makes a copy of the Player instance", () => {
         const player = new Player();
-        const playerAfter = Player.fromObject(JSON.parse(JSON.stringify(player)));
+        const playerAfter = Player.fromDto(Player.toDto(player));
         expect(playerAfter.id).equal(player.id);
     });
 });

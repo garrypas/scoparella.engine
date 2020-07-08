@@ -1,5 +1,6 @@
 import { Card } from "./Card";
 import { ComparableArray } from "../core/ComparableArray";
+import { ITableDto } from "../dtos/ITableDto";
 
 export class Table {
     private _cards: Card[];
@@ -44,10 +45,16 @@ export class Table {
         return this._cards.length;
     }
 
-    static fromObject(jsonObj: Table): Table {
+    static fromDto(jsonObj: ITableDto): Table {
         const table = new Table();
-        table._cards = Card.fromArray(jsonObj._cards);
+        table._cards = Card.fromDtoArray(jsonObj.cards);
         return table;
+    }
+
+    static toDto(obj: Table): ITableDto {
+        return { 
+            cards: Card.toDtoArray(obj.cards)
+        };
     }
 }
 
