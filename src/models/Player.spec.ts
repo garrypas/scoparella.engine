@@ -44,7 +44,7 @@ describe("Player tests", () => {
         });
     });
 
-    it("fromDto() makes a copy of the Player instance", () => {
+    it("fromDto/toDto() serializes/deserializes the Player instance", () => {
         const player = new Player();
         const playerAfter = Player.fromDto(Player.toDto(player));
         expect(playerAfter.id).equal(player.id);

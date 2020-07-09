@@ -12,6 +12,8 @@ import { CARDS_NOT_ON_TABLE } from "./models/Table";
 import { RuleEngine } from "./rules/RuleEngine";
 import { SinonSpy, SinonSandbox, createSandbox } from "sinon";
 import { PlayCardValidationResult } from "./rules/PlayCardValidationResult";
+import { Card } from "./models/Card";
+import { ComparableArray } from "./core/ComparableArray";
 
 describe("Game tests", () => {
     let _ruleEngine: RuleEngine;
@@ -260,6 +262,50 @@ describe("Game tests", () => {
             .playSingleRound()
             .build();
         expect(_validTakeSpy.callCount).to.be.equal(6);
+    });
+
+    describe("moves()", () => {
+        let _game: Game;
+        let _cards1: Card[], _cards2: Card[];
+        let _table: Card[];
+        beforeEach(() => {
+            const builder = _gameBuilder
+                .addTwoPlayers()
+                .playHands(0);
+
+            _game = builder.preBuild();
+            _cards1 = _game.hands[0].cards;
+            _cards2 = _game.hands[1].cards;
+            _table = _game.table.cards;
+
+            _game = builder
+                .playHands(2)
+                .withTakes()
+                .play(_game);
+        });
+
+        it("Records moves", () => {
+            expect(_game.moves).to.have.lengthOf(4);
+        });
+
+        it("Records player", () => {
+            expect(_game.moves[0].player.equals(_game.hands[0].player)).to.be.true;
+            expect(_game.moves[1].player.equals(_game.hands[1].player)).to.be.true;
+        });
+
+        it("Records takes", () => {
+            expect(_game.moves[0].taken).to.have.lengthOf(1);
+            expect(ComparableArray.isSubset(_game.moves[0].taken, [ _table[0] ])).to.be.true;
+            expect(_game.moves[3].taken).to.have.lengthOf(1);
+            expect(ComparableArray.isSubset(_game.moves[3].taken, [ _table[1] ])).to.be.true;
+        });
+
+        it("Records card", () => {
+            expect(_game.moves[0].card.equals(_cards1[0])).to.be.true;
+            expect(_game.moves[1].card.equals(_cards2[0])).to.be.true;
+            expect(_game.moves[2].card.equals(_cards1[1])).to.be.true;
+            expect(_game.moves[3].card.equals(_cards2[1])).to.be.true;
+        });
     });
 
     it("Throws and error if move is not valid", () => {

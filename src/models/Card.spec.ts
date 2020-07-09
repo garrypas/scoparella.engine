@@ -52,7 +52,7 @@ describe("Card tests", function () {
     });
 
     describe("fromDto()", () => {
-        it("makes a copy of the Card instance", () => {
+        it("Copies the Card instance into a DTO", () => {
             const cardAfter = Card.fromDto({ face: _card.face, suit: _card.suit });
             expect(cardAfter.face).equal(_card.face);
             expect(cardAfter.suit).equal(_card.suit);
@@ -60,7 +60,7 @@ describe("Card tests", function () {
     });
 
     describe("fromDtoArray()", () => {
-        it("makes a copy of the Card instance", () => {
+        it("Copies the array of Card instances into the DTO", () => {
             const cardOther = new Card(Face.Four, Suit.Coins);
             const cards = Card.fromDtoArray([ _card,  cardOther ]);
             expect(cards[0].face).equal(_card.face);
@@ -68,5 +68,20 @@ describe("Card tests", function () {
             expect(cards[1].face).equal(cardOther.face);
             expect(cards[1].suit).equal(cardOther.suit);
         });
+    });
+
+    it("fromDto/toDto() serializes/deserializes() the Card instance", () => {
+        const cardAfter = Card.toDto(new Card(_card.face, _card.suit));
+        expect(cardAfter.face).equal(_card.face);
+        expect(cardAfter.suit).equal(_card.suit);
+    });
+
+    it("fromDtoArray/toDtoArray() serializes/deserializes() the Card array", () => {
+        const cardOther = new Card(Face.Four, Suit.Coins);
+        const cards = Card.toDtoArray([ _card,  cardOther ]);
+        expect(cards[0].face).equal(_card.face);
+        expect(cards[0].suit).equal(_card.suit);
+        expect(cards[1].face).equal(cardOther.face);
+        expect(cards[1].suit).equal(cardOther.suit);
     });
 });

@@ -10,7 +10,7 @@ export class Table {
     }
 
     get cards() : Card[] {
-        return this._cards;
+        return this._cards.slice();
     }
 
     add(cardToAdd: Card) {

@@ -12,6 +12,7 @@ import { RuleEngine } from "./rules/RuleEngine";
 import { PlayCardValidationResult } from "./rules/PlayCardValidationResult";
 import { fromJson } from "./utils/fromJson";
 import { IGameDto } from "./dtos/IGameDto";
+import { MoveLogItem } from "./models/MoveLogItem";
 
 export class Game {
     private _deck: Deck;
@@ -23,6 +24,7 @@ export class Game {
     private _scoreboard: Scoreboard;
     private _ruleEngine: RuleEngine;
     private _roundsPlayed: number;
+    private _moves: MoveLogItem[];
 
     constructor(config: GameConfig) {
         this._deck = new Deck();
@@ -32,6 +34,7 @@ export class Game {
         this._scoreboard = config.scoreboard || new Scoreboard();
         this._ruleEngine = config.ruleEngine || new RuleEngine();
         this._roundsPlayed = 0;
+        this._moves = [];
     }
 
     get deck() : Deck {
@@ -106,11 +109,21 @@ export class Game {
         }
     }
 
+    get moves(): MoveLogItem[] {
+        return this._moves;
+    }
+
+    private recordMove(card: Card, taken: Card[], player: Player, isScopa: boolean) {
+        this._moves.push(new MoveLogItem(card, taken, new Date().toISOString(), player, isScopa));
+    }
+
     tryPlayCards(cardToPlay: Card, cardsToTake: Card[], hand: Hand) {
         this.playCardsPreCheck(cardToPlay, cardsToTake, hand);
         this.playCards(cardToPlay, cardsToTake, hand);
 
-        this.checkForScopa(cardToPlay, cardsToTake, this._table.cards, hand);
+        const wasScopa = this.checkForScopa(cardToPlay, cardsToTake, this._table.cards, hand);
+
+        this.recordMove(cardToPlay, cardsToTake, hand.player, wasScopa);
 
         this.moveTurnToNextPlayer();
 
@@ -140,10 +153,13 @@ export class Game {
         }
     }
 
-    private checkForScopa(cardToPlay: Card, cardsToTake: Card[], cardsOnTable: Card[], hand: Hand) {
+    private checkForScopa(cardToPlay: Card, cardsToTake: Card[], cardsOnTable: Card[], hand: Hand): boolean {
+        let isScopa: boolean = false;
         if(this._ruleEngine.isScopa(cardsToTake, cardsOnTable)) {
             this._scoreboard.addScopa(hand.player, cardToPlay);
+            isScopa = true;
         }
+        return isScopa;
     }
 
     private moveTurnToNextPlayer() {
