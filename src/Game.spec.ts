@@ -155,6 +155,25 @@ describe("Game tests", () => {
         expect(game.hands[1].captured).to.be.lengthOf(40);
     });
 
+    it("Gives adds table awarded to last taker at the end of a round to the move log", () => {
+        const game = _gameBuilder
+            .addTwoPlayers()
+            .build();
+
+        for(let i = 0; i < 18; i++) {
+            game.tryPlayCards(game.hands[0].cards[0], [ ], game.hands[0]);
+            if(i === 0) {
+                const [ knightOfCups, knightOfSwords ] = [ game.hands[1].cards[2], game.table.cards[0] ];
+                game.tryPlayCards(knightOfCups, [ knightOfSwords ], game.hands[1]);
+            } else{
+                game.tryPlayCards(game.hands[1].cards[0], [ ], game.hands[1]);
+            }
+        }
+        expect(game.moves).to.be.lengthOf(37);
+        expect(game.moves[game.moves.length - 1].taken).to.be.lengthOf(38);
+        expect(game.moves[game.moves.length - 1].card).to.be.null;
+    });
+
     it("Deals 3 cards to each player once the game is ready to begin", () => {
         const game = _gameBuilder.addTwoPlayers().build();
         expect(game.hands[0].cards).to.have.lengthOf(3);
