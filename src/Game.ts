@@ -113,7 +113,7 @@ export class Game {
         return this._moves;
     }
 
-    private recordMove(card: Card, taken: Card[], player: Player, isScopa: boolean) {
+    private recordMove(card: Card | null, taken: Card[], player: Player, isScopa: boolean) {
         this._moves.push(new MoveLogItem(card, taken, new Date().toISOString(), player, isScopa));
     }
 
@@ -175,7 +175,11 @@ export class Game {
     }
 
     private giveTableToLastTaker() {
-        this._lastTaker?.capture(this._table.removeAll());
+        const tableCards = this._table.removeAll();
+        this._lastTaker?.capture(tableCards);
+        if(this._lastTaker) {
+            this.recordMove(null, tableCards, this._lastTaker?.player, false);
+        }
     }
 
     private updateScorecard() {

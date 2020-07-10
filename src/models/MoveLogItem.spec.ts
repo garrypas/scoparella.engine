@@ -42,7 +42,7 @@ describe("MoveLogItem tests", () => {
 
                 it("serializes/deserializes cards", () =>
                     _moveLogItemAfter.forEach((_, i) =>
-                        expect(_moveLogItemAfter[i].card.equals(_moveLogItem[i].card)).to.be.true));
+                        expect(_moveLogItemAfter[i].card?.equals(_moveLogItem[i].card!)).to.be.true));
 
                 it("serializes/deserializes players", () =>
                     _moveLogItemAfter.forEach((_, i) =>

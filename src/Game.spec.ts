@@ -301,10 +301,10 @@ describe("Game tests", () => {
         });
 
         it("Records card", () => {
-            expect(_game.moves[0].card.equals(_cards1[0])).to.be.true;
-            expect(_game.moves[1].card.equals(_cards2[0])).to.be.true;
-            expect(_game.moves[2].card.equals(_cards1[1])).to.be.true;
-            expect(_game.moves[3].card.equals(_cards2[1])).to.be.true;
+            expect(_game.moves[0].card?.equals(_cards1[0])).to.be.true;
+            expect(_game.moves[1].card?.equals(_cards2[0])).to.be.true;
+            expect(_game.moves[2].card?.equals(_cards1[1])).to.be.true;
+            expect(_game.moves[3].card?.equals(_cards2[1])).to.be.true;
         });
     });
 
