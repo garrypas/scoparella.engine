@@ -11,7 +11,7 @@ import { Scoreboard } from "./scoring/Scoreboard";
 import { RuleEngine } from "./rules/RuleEngine";
 import { PlayCardValidationResult } from "./rules/PlayCardValidationResult";
 import { fromJson } from "./utils/fromJson";
-import { IGameDto } from "./dtos/IGameDto";
+import { GameDto } from "@scoparella/dtos";
 import { MoveLogItem } from "./models/MoveLogItem";
 
 export class Game {
@@ -221,7 +221,7 @@ export class Game {
         });
     }
 
-    static fromDto(dtoObj: IGameDto): Game {
+    static fromDto(dtoObj: GameDto): Game {
         const game = new Game({
             numberOfPlayers: dtoObj.numberOfPlayers,
             scoreboard: Scoreboard.fromDto(dtoObj.scoreboard)
@@ -241,7 +241,7 @@ export class Game {
         return game;
     }
 
-    static toDto(obj: Game): IGameDto {
+    static toDto(obj: Game): GameDto {
         return {
             deck: Deck.toDto(obj._deck),
             hands: Hand.toDtoArray(obj._hands),

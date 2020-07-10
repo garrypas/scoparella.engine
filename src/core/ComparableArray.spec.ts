@@ -1,8 +1,8 @@
 import { expect } from "chai";
 import { ComparableArray } from "./ComparableArray";
-import { IComparable } from "./IComparable";
+import { Comparable } from "./Comparable";
 
-class ComparableMock implements IComparable {
+class ComparableMock implements Comparable {
     private _num: number;
     constructor(num: number) {
         this._num = num;

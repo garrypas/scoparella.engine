@@ -7,7 +7,7 @@ import { CoinScores } from "./CoinScores";
 import { NumberOfCardsScore } from "./NumberOfCardsScore";
 import { IScoreCalculator } from "./IScoreCalculator";
 import { ScopaScore } from "./ScopaScore";
-import { IScoreboardDto } from "../dtos/IScoreboardDto";
+import { ScoreboardDto } from "@scoparella/dtos";
 
 function createScoreCalculators(): IScoreCalculator[] {
     return [
@@ -79,14 +79,14 @@ export class Scoreboard {
         return thisRoundOfScores;
     }
 
-    static fromDto(jsonObj: IScoreboardDto): Scoreboard {
+    static fromDto(jsonObj: ScoreboardDto): Scoreboard {
         const scoreboard = new Scoreboard();
         scoreboard._scopas = jsonObj.scopas.map(scopaCards => scopaCards.map(c => Card.fromDto(c)));
         scoreboard._scores = jsonObj.scores.map(s => Score.fromDto(s));
         return scoreboard;
     }
 
-    static toDto(obj: Scoreboard): IScoreboardDto {
+    static toDto(obj: Scoreboard): ScoreboardDto {
         return {
             scopas: obj._scopas,
             scores: Score.toDtoArray(obj._scores)

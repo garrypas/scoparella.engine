@@ -1,7 +1,7 @@
 import { Card } from "./Card";
 import { Player } from "./Player";
 import { ComparableArray } from "../core/ComparableArray";
-import { IHandDto } from "../dtos/IHandDto";
+import { HandDto } from "@scoparella/dtos";
 
 export class Hand {
     private _cards: Card[];
@@ -56,18 +56,18 @@ export class Hand {
         return this._cards.splice(cardToPlayIndex, 1)[0];
     }
 
-    static fromDto(jsonObj: IHandDto): Hand {
+    static fromDto(jsonObj: HandDto): Hand {
         const hand = new Hand(Player.fromDto(jsonObj.player));
         hand._captured = Card.fromDtoArray(jsonObj.captured);
         hand._cards = Card.fromDtoArray(jsonObj.cards);
         return hand;
     }
 
-    static fromDtoArray(hands: IHandDto[]): Hand[] {
+    static fromDtoArray(hands: HandDto[]): Hand[] {
         return hands.map(this.fromDto);
     }
 
-    static toDto(obj: Hand): IHandDto {
+    static toDto(obj: Hand): HandDto {
         return {
             captured: Card.toDtoArray(obj._captured),
             cards: Card.toDtoArray(obj._cards),
@@ -75,7 +75,7 @@ export class Hand {
         };
     }
 
-    static toDtoArray(arr: Hand[]): IHandDto[] {
+    static toDtoArray(arr: Hand[]): HandDto[] {
         return arr.map(this.toDto);
     }
 }

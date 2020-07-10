@@ -1,6 +1,6 @@
 import { Card } from "./Card"
 import { Player } from "./Player";
-import { IMoveLogItemDto } from "../dtos/IMoveLogItemDto";
+import { MoveLogItemDto } from "@scoparella/dtos";
 
 export class MoveLogItem {
     private _card: Card | null;
@@ -29,15 +29,15 @@ export class MoveLogItem {
     get player(): Player { return this._player; }
     get isScopa(): boolean { return this._isScopa; }
 
-    static fromDtoArray(dtoArr: IMoveLogItemDto[]): MoveLogItem[] {
+    static fromDtoArray(dtoArr: MoveLogItemDto[]): MoveLogItem[] {
         return dtoArr.map(this.fromDto);
     }
 
-    static toDtoArray(arr: IMoveLogItemDto[]): IMoveLogItemDto[] {
+    static toDtoArray(arr: MoveLogItemDto[]): MoveLogItemDto[] {
         return arr.map(this.toDto);
     }
 
-    static fromDto(dtoObj: IMoveLogItemDto): MoveLogItem {
+    static fromDto(dtoObj: MoveLogItemDto): MoveLogItem {
         return new MoveLogItem(
             dtoObj.card ? Card.fromDto(dtoObj.card) : null,
             Card.fromDtoArray(dtoObj.taken),
@@ -47,7 +47,7 @@ export class MoveLogItem {
         );
     }
 
-    static toDto(obj: MoveLogItem): IMoveLogItemDto {
+    static toDto(obj: MoveLogItem): MoveLogItemDto {
         return {
             card: obj._card ? Card.toDto(obj._card) : null,
             isScopa: obj._isScopa,

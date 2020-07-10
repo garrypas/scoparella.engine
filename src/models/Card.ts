@@ -1,10 +1,10 @@
 import { Suit } from "./Suit";
 import { Face, getFaceValue } from "./Face";
 import { getCombinations } from "../utils/getCombinations";
-import { IComparable } from "../core/IComparable";
-import { ICardDto } from "../dtos/ICardDto";
+import { Comparable } from "../core/Comparable";
+import { CardDto } from "@scoparella/dtos";
 
-export class Card implements IComparable { 
+export class Card implements Comparable { 
     private _face: Face;
     private _suit: Suit;
 
@@ -41,19 +41,19 @@ export class Card implements IComparable {
         return cards.map(c => getFaceValue(c._face)).reduce((x, y) => x + y);
     }
 
-    static fromDto(jsonObj: ICardDto): Card {
+    static fromDto(jsonObj: CardDto): Card {
         return new Card(jsonObj.face as Face, jsonObj.suit as Suit);
     }
 
-    static toDto(obj: Card): ICardDto {
+    static toDto(obj: Card): CardDto {
         return { face: obj._face, suit: obj.suit };
     }
 
-    static fromDtoArray(arr: ICardDto[]): Card[] {
+    static fromDtoArray(arr: CardDto[]): Card[] {
         return arr.map(this.fromDto);
     }
 
-    static toDtoArray(arr: Card[]): ICardDto[] {
+    static toDtoArray(arr: Card[]): CardDto[] {
         return arr.map(this.toDto);
     }
 }
