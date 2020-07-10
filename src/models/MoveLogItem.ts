@@ -29,13 +29,21 @@ export class MoveLogItem {
     get player(): Player { return this._player; }
     get isScopa(): boolean { return this._isScopa; }
 
-    static fromDto(jsonObj: IMoveLogItemDto): MoveLogItem {
+    static fromDtoArray(dtoArr: IMoveLogItemDto[]): MoveLogItem[] {
+        return dtoArr.map(this.fromDto);
+    }
+
+    static toDtoArray(arr: IMoveLogItemDto[]): IMoveLogItemDto[] {
+        return arr.map(this.toDto);
+    }
+
+    static fromDto(dtoObj: IMoveLogItemDto): MoveLogItem {
         return new MoveLogItem(
-            Card.fromDto(jsonObj.card),
-            Card.fromDtoArray(jsonObj.taken),
-            jsonObj.timestamp,
-            Player.fromDto(jsonObj.player),
-            jsonObj.isScopa,
+            Card.fromDto(dtoObj.card),
+            Card.fromDtoArray(dtoObj.taken),
+            dtoObj.timestamp,
+            Player.fromDto(dtoObj.player),
+            dtoObj.isScopa,
         );
     }
 

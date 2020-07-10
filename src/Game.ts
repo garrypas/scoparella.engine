@@ -217,22 +217,23 @@ export class Game {
         });
     }
 
-    static fromDto(jsonObj: IGameDto): Game {
+    static fromDto(dtoObj: IGameDto): Game {
         const game = new Game({
-            numberOfPlayers: jsonObj.numberOfPlayers,
-            scoreboard: Scoreboard.fromDto(jsonObj.scoreboard)
+            numberOfPlayers: dtoObj.numberOfPlayers,
+            scoreboard: Scoreboard.fromDto(dtoObj.scoreboard)
         });
-        game._deck = Deck.fromDto(jsonObj.deck);
-        game._hands = Hand.fromDtoArray(jsonObj.hands);
-        game._table = Table.fromDto(jsonObj.table);
-        if(jsonObj.lastTaker) {
-            game._lastTaker = Hand.fromDto(jsonObj.lastTaker);
+        game._deck = Deck.fromDto(dtoObj.deck);
+        game._hands = Hand.fromDtoArray(dtoObj.hands);
+        game._table = Table.fromDto(dtoObj.table);
+        if(dtoObj.lastTaker) {
+            game._lastTaker = Hand.fromDto(dtoObj.lastTaker);
         }
-        game._roundsPlayed = jsonObj.roundsPlayed;
-        if(jsonObj.whoseTurn) {
-            game._whoseTurn = Hand.fromDto(jsonObj.whoseTurn);
+        game._roundsPlayed = dtoObj.roundsPlayed;
+        if(dtoObj.whoseTurn) {
+            game._whoseTurn = Hand.fromDto(dtoObj.whoseTurn);
         }
-        game._numberOfPlayers = jsonObj.numberOfPlayers;
+        game._numberOfPlayers = dtoObj.numberOfPlayers;
+        game._moves = MoveLogItem.fromDtoArray(dtoObj.moves)
         return game;
     }
 
@@ -245,7 +246,8 @@ export class Game {
             roundsPlayed: obj._roundsPlayed,
             scoreboard: Scoreboard.toDto(obj._scoreboard),
             table: Table.toDto(obj._table),
-            whoseTurn: obj._whoseTurn ? Hand.toDto(obj._whoseTurn): undefined
+            whoseTurn: obj._whoseTurn ? Hand.toDto(obj._whoseTurn): undefined,
+            moves: MoveLogItem.toDtoArray(obj._moves)
         };
     }
 }

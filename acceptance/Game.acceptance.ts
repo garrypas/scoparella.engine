@@ -56,7 +56,8 @@ describe.only("Game acceptance tests", () => {
             }
         }
 
-        console.log(`Player 1 (${_game.score(_game.hands[0].player)} - ${_game.score(_game.hands[1].player)}) Player 2`)
+        console.log(`Player 1 (${_game.score(_game.hands[0].player)} - ${_game.score(_game.hands[1].player)}) Player 2`);
+        expect(_game.moves).not.to.have.length.lessThan(36);
         expect(_game.roundsPlayed).to.be.greaterThan(0);
         expect(_game.score(_game.hands[0].player) >= 11 || _game.score(_game.hands[1].player) >= 11).to.be.true
     });

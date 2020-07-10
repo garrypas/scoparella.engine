@@ -331,5 +331,8 @@ describe("Game tests", () => {
         expect(gameAfter.table).not.to.be.undefined;
         expect(gameAfter.table).to.have.lengthOf(gameBefore.table.cards.length);
         expect(gameAfter.whoseTurn).not.to.be.undefined;
+        expect(gameAfter.moves).not.to.be.undefined;
+        expect(gameAfter.moves).to.have.lengthOf(gameBefore.moves.length);
+        expect(gameAfter.moves).to.have.lengthOf(4)
     });
 });

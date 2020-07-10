@@ -2,6 +2,7 @@ import { IDeckDto } from "./IDeckDto";
 import { IHandDto } from "./IHandDto";
 import { ITableDto } from "./ITableDto";
 import { IScoreboardDto } from "./IScoreboardDto";
+import { IMoveLogItemDto } from "./IMoveLogItemDto";
 
 export interface IGameDto {
     deck: IDeckDto;
@@ -12,4 +13,5 @@ export interface IGameDto {
     whoseTurn: IHandDto | undefined;
     scoreboard: IScoreboardDto;
     roundsPlayed: number;
+    moves: IMoveLogItemDto[];
 }
