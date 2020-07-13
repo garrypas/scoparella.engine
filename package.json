@@ -28,5 +28,5 @@
     "@types/uuid": "^8.0.0",
     "uuid": "^8.2.0"
   },
-  "types": "index.ts.d"
+  "types": "index.d.ts"
 }
