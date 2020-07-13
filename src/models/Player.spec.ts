@@ -9,6 +9,11 @@ describe("Player tests", () => {
     beforeEach(() =>  _sandbox = createSandbox());
     afterEach(() => _sandbox.restore());
 
+    it("new(id) - defined id is set", () => {
+        const player = new Player("xyz");
+        expect(player.id).to.equal("xyz");
+    })
+
     describe("generateId()", () => {
         let _player: Player;
         const FAKE_ID = "00001111-2222-3333-4444-555566667777";

@@ -4,8 +4,8 @@ import { PlayerDto } from "@scoparella/dtos";
 
 export class Player implements Comparable {
     private _id: string;
-    constructor() {
-        this._id = IdGenerator.generateId();
+    constructor(id?: string) {
+        this._id = id || IdGenerator.generateId();
     }
     get id() {
         return this._id;
