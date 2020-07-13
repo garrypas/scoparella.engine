@@ -27,5 +27,6 @@
     "@scoparella/dtos": "git+https://github.com/garrypas/scoparella.dtos.git#v1.1.1",
     "@types/uuid": "^8.0.0",
     "uuid": "^8.2.0"
-  }
+  },
+  "types": "index.ts.d"
 }
