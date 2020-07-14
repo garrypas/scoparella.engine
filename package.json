@@ -36,5 +36,5 @@
     "!*/**.spec.ts",
     "!*/**.spec.js",
     "!acceptance"
-  ],
+  ]
 }
