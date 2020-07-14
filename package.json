@@ -37,6 +37,7 @@
     "src",
     "!*/**.spec.ts",
     "!*/**.spec.js",
-    "!acceptance"
+    "!acceptance",
+    "tsconfig.json"
   ]
 }
