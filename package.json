@@ -8,7 +8,7 @@
     "build-dev": "rimraf dist/ && tsc",
     "test": "npm run build-dev && mocha -r ts-node/register \"./**/*.spec.ts\"",
     "acceptance": "npm run build-dev && mocha -r ts-node/register \"./**/*.acceptance.ts\"",
-    "postinstall": "npm run build"
+    "postinstall": "npm i && npm run build"
   },
   "author": "",
   "license": "ISC",
