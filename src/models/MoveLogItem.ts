@@ -33,7 +33,7 @@ export class MoveLogItem {
         return dtoArr.map(this.fromDto);
     }
 
-    static toDtoArray(arr: MoveLogItemDto[]): MoveLogItemDto[] {
+    static toDtoArray(arr: MoveLogItem[]): MoveLogItemDto[] {
         return arr.map(this.toDto);
     }
 
