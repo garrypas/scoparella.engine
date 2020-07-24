@@ -118,6 +118,14 @@ export class Game {
     }
 
     tryPlayCards(cardToPlay: Card, cardsToTake: Card[], hand: Hand) {
+        const thisHand = this.hands.find(h => h.equals(hand));
+        if(!thisHand) {
+            throw new Error("Unable to find matching hand in Game state.");
+        }
+        return this._tryPlayCards(cardToPlay, cardsToTake, thisHand);
+    }
+
+    private _tryPlayCards(cardToPlay: Card, cardsToTake: Card[], hand: Hand) {
         this.playCardsPreCheck(cardToPlay, cardsToTake, hand);
         this.playCards(cardToPlay, cardsToTake, hand);
 

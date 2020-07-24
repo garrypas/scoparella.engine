@@ -1,9 +1,9 @@
-import { Game } from "../src/Game";
-import { Player } from "../src/models/Player";
-import { Card } from "../src/models/Card";
-import { Hand } from "../src/models/Hand";
+import { Game } from "../../src/Game";
+import { Player } from "../../src/models/Player";
+import { Card } from "../../src/models/Card";
+import { Hand } from "../../src/models/Hand";
 import { expect } from "chai";
-import { GameStatus } from "../src/models/GameStatus";
+import { GameStatus } from "../../src/models/GameStatus";
 
 function getExactMatch(cardInHand: Card, cardsOnTable: Card[]): Card | undefined {
     return cardsOnTable.find(cardOnTable => cardOnTable.faceEquals(cardInHand));
@@ -37,6 +37,9 @@ describe.only("Game acceptance tests", () => {
         const card = hand.cards[0];
         const cardsThatCanBeTaken = determineWhichCardsIfAnyCanBeTakenWithAGivenCardInHand(card, _game.table.cards);
         _game.tryPlayCards(card, cardsThatCanBeTaken, hand);
+        // Go through serialization loop to ensure game does not depend on object
+        // references that might break during serialization/deserialization:
+        _game = Game.fromJson(JSON.stringify(Game.toDto(_game)));
     };
 
     it("Play a game to conclusion", () => {
