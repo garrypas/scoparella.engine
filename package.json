@@ -28,7 +28,7 @@
     "typescript": "^3.9.6"
   },
   "dependencies": {
-    "@scoparella/dtos": "git+https://github.com/garrypas/scoparella.dtos.git#v1.1.1",
+    "@scoparella/dtos": "git+https://github.com/garrypas/scoparella.dtos.git#v1.1.2",
     "@types/uuid": "^8.0.0",
     "uuid": "^8.2.0"
   },

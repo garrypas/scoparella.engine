@@ -251,7 +251,8 @@ export class Game {
             scoreboard: Scoreboard.toDto(obj._scoreboard),
             table: Table.toDto(obj._table),
             whoseTurn: obj._whoseTurn ? Hand.toDto(obj._whoseTurn): undefined,
-            moves: MoveLogItem.toDtoArray(obj._moves)
+            moves: MoveLogItem.toDtoArray(obj._moves),
+            status: obj.status
         };
     }
 }
