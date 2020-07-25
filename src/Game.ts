@@ -235,6 +235,10 @@ export class Game {
         });
     }
 
+    static toJson(game: Game): string {
+        return JSON.stringify(Game.toDto(game));
+    }
+
     static fromDto(dtoObj: GameDto): Game {
         const game = new Game({
             numberOfPlayers: dtoObj.numberOfPlayers,

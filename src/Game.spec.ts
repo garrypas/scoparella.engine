@@ -346,7 +346,8 @@ describe("Game tests", () => {
             .addTwoPlayers()
             .playHands(2)
             .build();
-        const gameAfter: Game = Game.fromDto(Game.toDto(gameBefore));
+        let gameAfter: Game = Game.fromDto(Game.toDto(gameBefore));
+        gameAfter = Game.fromJson(Game.toJson(gameAfter));
         expect(gameAfter.deck).not.to.be.undefined;
         expect(gameAfter.hands).not.to.be.undefined;
         expect(gameAfter.lastTaker).to.equal(gameBefore.lastTaker);
