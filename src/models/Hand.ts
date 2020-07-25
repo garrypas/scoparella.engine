@@ -2,6 +2,7 @@ import { Card } from "./Card";
 import { Player } from "./Player";
 import { ComparableArray } from "../core/ComparableArray";
 import { HandDto } from "@scoparella/dtos";
+import { CardNotInPlayersHandError } from "../exceptions";
 
 export class Hand {
     private _cards: Card[];
@@ -51,7 +52,7 @@ export class Hand {
     remove(card: Card): Card {
         const cardToPlayIndex = this._cards.findIndex(t => t.equals(card));
         if(cardToPlayIndex < 0) {
-            throw new Error(`Could not play ${card.face} of ${card.suit}. It is not in this player's hand.`);
+            throw new CardNotInPlayersHandError(card.face, card.suit);
         }
         return this._cards.splice(cardToPlayIndex, 1)[0];
     }

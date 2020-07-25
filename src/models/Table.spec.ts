@@ -1,12 +1,12 @@
 import { expect } from "chai";
 import { 
     Table,
-    CARDS_NOT_ON_TABLE
 } from "./Table";
 import { Card } from "./Card";
 import { Face } from "./Face";
 import { Suit } from "./Suit";
 import { ComparableArray } from "../core/ComparableArray";
+import { CardsNotOnTableError } from "../exceptions";
 
 describe("Table tests", () => {
     let _table: Table;
@@ -50,7 +50,7 @@ describe("Table tests", () => {
     });
 
     it("remove() throws error if the card isn't on the table", () => {
-        expect(() => _table.remove(new Card(Face.Five, Suit.Clubs))).to.throw(CARDS_NOT_ON_TABLE);
+        expect(() => _table.remove(new Card(Face.Five, Suit.Clubs))).to.throw(CardsNotOnTableError);
     });
 
     it("removeAll() removes all cards from the table", () => {

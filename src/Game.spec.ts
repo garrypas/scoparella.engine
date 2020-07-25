@@ -1,20 +1,17 @@
 
 import { 
-    CANNOT_ADD_MORE_PLAYERS_ERROR,
-    NOT_THIS_PLAYERS_TURN,
-    PLAYER_ALREADY_ADDED,
     Game,
 } from "./Game";
 import { expect } from "chai";
 import { Player } from "./models/Player";
 import { GameStatus } from "./models/GameStatus";
 import { GameBuilder } from "./test-utils/GameBuilder";
-import { CARDS_NOT_ON_TABLE } from "./models/Table";
 import { RuleEngine } from "./rules/RuleEngine";
 import { SinonSpy, SinonSandbox, createSandbox } from "sinon";
 import { PlayCardValidationResult } from "./rules/PlayCardValidationResult";
 import { Card } from "./models/Card";
 import { ComparableArray } from "./core/ComparableArray";
+import { NotThisPlayersTurnError, CannotAddMorePlayersError, PlayerAlreadyAddedError, CardsNotOnTableError } from "./exceptions";
 
 describe("Game tests", () => {
     let _ruleEngine: RuleEngine;
@@ -200,7 +197,7 @@ describe("Game tests", () => {
         const game = _gameBuilder.addTwoPlayers().build();
         expect(() =>
             game.tryPlayCards(game.hands[1].cards[0], [ ], game.hands[1]),
-        ).to.throw(NOT_THIS_PLAYERS_TURN);
+        ).to.throw(NotThisPlayersTurnError);
     });
 
     it("Moves turn to next player", () => {
@@ -232,7 +229,7 @@ describe("Game tests", () => {
 
     it("Fails to take requested cards when they are not on the table", () => {
         const game = _gameBuilder.addTwoPlayers().build();
-        expect(() => game.tryPlayCards(game.hands[0].cards[0], [ game.hands[0].cards[0] ], game.hands[0])).to.throw(CARDS_NOT_ON_TABLE);
+        expect(() => game.tryPlayCards(game.hands[0].cards[0], [ game.hands[0].cards[0] ], game.hands[0])).to.throw(CardsNotOnTableError);
     });
 
     it("Puts card on table if it cannot be used to capture", () => {
@@ -245,7 +242,7 @@ describe("Game tests", () => {
 
     it("Throws error when trying to add more players than the maximum number the game can accept", () => {
         const game = _gameBuilder.addTwoPlayers().build();
-        expect(() => game.addPlayer(new Player())).to.throw(CANNOT_ADD_MORE_PLAYERS_ERROR);
+        expect(() => game.addPlayer(new Player())).to.throw(CannotAddMorePlayersError);
     });
 
     it("Throws error when trying to add players with the same IDs to the game", () => {
@@ -253,7 +250,7 @@ describe("Game tests", () => {
             numberOfPlayers: 2
         });
         game.addPlayer(new Player("1"));
-        expect(() => game.addPlayer(new Player("1"))).to.throw(PLAYER_ALREADY_ADDED);
+        expect(() => game.addPlayer(new Player("1"))).to.throw(PlayerAlreadyAddedError);
     });
 
     it("Deals next round when each player's hand is empty", () => {

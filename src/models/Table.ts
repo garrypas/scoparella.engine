@@ -1,6 +1,7 @@
 import { Card } from "./Card";
 import { ComparableArray } from "../core/ComparableArray";
 import { TableDto } from "@scoparella/dtos";
+import { CardsNotOnTableError, CardAlreadyOnTableError } from "../exceptions";
 
 export class Table {
     private _cards: Card[];
@@ -15,7 +16,7 @@ export class Table {
 
     add(cardToAdd: Card) {
         if(this._cards.findIndex(card => card.equals(cardToAdd)) >= 0) {
-            throw new Error(`The card with the face ${cardToAdd.face} and suit ${cardToAdd.suit} is already on the table`);
+            throw new CardAlreadyOnTableError(cardToAdd.face, cardToAdd.suit);
         }
         this._cards.push(cardToAdd);
     }
@@ -25,7 +26,7 @@ export class Table {
             card = [card];
         }
         if(!ComparableArray.isSubset(card, this._cards)) {
-            throw new Error(CARDS_NOT_ON_TABLE);
+            throw new CardsNotOnTableError();
         }
         return card.filter(toRemove => {
             const index = this._cards.findIndex(card => card.equals(toRemove));
@@ -57,5 +58,3 @@ export class Table {
         };
     }
 }
-
-export const CARDS_NOT_ON_TABLE = "Failed to remove cards. Some of the cards were not on the table";

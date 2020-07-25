@@ -13,6 +13,8 @@ import { PlayCardValidationResult } from "./rules/PlayCardValidationResult";
 import { fromJson } from "./utils/fromJson";
 import { GameDto } from "@scoparella/dtos";
 import { MoveLogItem } from "./models/MoveLogItem";
+import { CannotAddMorePlayersError, NotThisPlayersTurnError, PlayerAlreadyAddedError, CardNotInPlayersHandError, NoMatchingHandInGameError } from "./exceptions/";
+import { ScopaMoveValidationError } from "./exceptions/ScopaMoveValidationError";
 
 export class Game {
     private _deck: Deck;
@@ -98,14 +100,14 @@ export class Game {
 
     private playCardsPreCheck(cardToPlay: Card, cardsToTake: Card[], hand: Hand) {
         if (!this._whoseTurn || !hand.equals(this._whoseTurn)) {
-            throw new Error(NOT_THIS_PLAYERS_TURN);
+            throw new NotThisPlayersTurnError();
         }
         if (!hand.hasCard(cardToPlay)) {
-            throw new Error(`Could not play ${cardToPlay.face} of ${cardToPlay.suit}. It is not in this player's hand.`);
+            throw new CardNotInPlayersHandError(cardToPlay.face, cardToPlay.suit);
         }
         const validationResult = this._ruleEngine.validPlay(cardToPlay, cardsToTake, this._table.cards);
         if(validationResult !== PlayCardValidationResult.OK) {
-            throw new Error(validationResult);
+            throw new ScopaMoveValidationError(validationResult);
         }
     }
 
@@ -120,7 +122,7 @@ export class Game {
     tryPlayCards(cardToPlay: Card, cardsToTake: Card[], hand: Hand) {
         const thisHand = this.hands.find(h => h.equals(hand));
         if(!thisHand) {
-            throw new Error("Unable to find matching hand in Game state.");
+            throw new NoMatchingHandInGameError();
         }
         return this._tryPlayCards(cardToPlay, cardsToTake, thisHand);
     }
@@ -213,10 +215,10 @@ export class Game {
 
     addPlayer(player: Player) {
         if(this._hands.length + 1 > this._numberOfPlayers) {
-            throw new Error(CANNOT_ADD_MORE_PLAYERS_ERROR);
+            throw new CannotAddMorePlayersError();
         }
         if(this._hands.find(h => h.player.id === player.id)) {
-            throw new Error(PLAYER_ALREADY_ADDED);
+            throw new PlayerAlreadyAddedError();
         }
 
         this._hands.push(new Hand(player));
@@ -268,7 +270,3 @@ export class Game {
         };
     }
 }
-
-export const CANNOT_ADD_MORE_PLAYERS_ERROR = "Cannot add more players, the game is full";
-export const NOT_THIS_PLAYERS_TURN = "It is not this player's turn yet";
-export const PLAYER_ALREADY_ADDED = "You cannot add a player with this ID, a player with this ID is already in the game";

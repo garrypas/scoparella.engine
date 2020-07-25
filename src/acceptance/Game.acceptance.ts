@@ -4,6 +4,7 @@ import { Card } from "../../src/models/Card";
 import { Hand } from "../../src/models/Hand";
 import { expect } from "chai";
 import { GameStatus } from "../../src/models/GameStatus";
+import { NotThisPlayersTurnError } from "../exceptions";
 
 function getExactMatch(cardInHand: Card, cardsOnTable: Card[]): Card | undefined {
     return cardsOnTable.find(cardOnTable => cardOnTable.faceEquals(cardInHand));
@@ -55,7 +56,7 @@ describe.only("Game acceptance tests", () => {
                     playCard(_game.whoseTurn);
                     continue;
                 }
-                throw new Error("Not this person's turn");
+                throw new NotThisPlayersTurnError();
             }
         }
 
