@@ -2,6 +2,7 @@
 import { 
     CANNOT_ADD_MORE_PLAYERS_ERROR,
     NOT_THIS_PLAYERS_TURN,
+    PLAYER_ALREADY_ADDED,
     Game,
 } from "./Game";
 import { expect } from "chai";
@@ -245,6 +246,14 @@ describe("Game tests", () => {
     it("Throws error when trying to add more players than the maximum number the game can accept", () => {
         const game = _gameBuilder.addTwoPlayers().build();
         expect(() => game.addPlayer(new Player())).to.throw(CANNOT_ADD_MORE_PLAYERS_ERROR);
+    });
+
+    it("Throws error when trying to add players with the same IDs to the game", () => {
+        const game = new Game({
+            numberOfPlayers: 2
+        });
+        game.addPlayer(new Player("1"));
+        expect(() => game.addPlayer(new Player("1"))).to.throw(PLAYER_ALREADY_ADDED);
     });
 
     it("Deals next round when each player's hand is empty", () => {

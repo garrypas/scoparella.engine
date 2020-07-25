@@ -215,6 +215,10 @@ export class Game {
         if(this._hands.length + 1 > this._numberOfPlayers) {
             throw new Error(CANNOT_ADD_MORE_PLAYERS_ERROR);
         }
+        if(this._hands.find(h => h.player.id === player.id)) {
+            throw new Error(PLAYER_ALREADY_ADDED);
+        }
+
         this._hands.push(new Hand(player));
         this._scoreboard.add(player);
         if(this._hands.length == this._numberOfPlayers) {
@@ -267,3 +271,4 @@ export class Game {
 
 export const CANNOT_ADD_MORE_PLAYERS_ERROR = "Cannot add more players, the game is full";
 export const NOT_THIS_PLAYERS_TURN = "It is not this player's turn yet";
+export const PLAYER_ALREADY_ADDED = "You cannot add a player with this ID, a player with this ID is already in the game";
