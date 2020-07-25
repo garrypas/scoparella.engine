@@ -9,3 +9,4 @@ export {Player} from "./models/Player";
 export {Score} from "./models/Score";
 export {Suit} from "./models/Suit";
 export {Table} from "./models/Table";
+export * from "./exceptions"
