@@ -13,8 +13,8 @@
       "noImplicitThis": true,
       "strictNullChecks": true,
       "preserveConstEnums": true,
-      "suppressImplicitAnyIndexErrors": true,
+      "suppressImplicitAnyIndexErrors": false,
       "forceConsistentCasingInFileNames": true
     },
-    "exclude": [ "**/node_modules", "**/dist","**/*.spec.ts", "**/test-utils", "acceptance" ]
+    "exclude": [ "**/node_modules", "**/dist","**/*.spec.ts", "**/test-utils", "acceptance", "jest.config.js" ]
   }

@@ -3,10 +3,9 @@ import { Player } from "../models/Player";
 import { Card } from "../models/Card";
 import { Face } from "../models/Face";
 import { Suit } from "../models/Suit";
-import { expect } from "chai";
 
 describe("ScopaScore tests", () => {
-    it("Counts scopas", () => {
+    test("Counts scopas", () => {
         const score = ScopaScore.scoreScopas(
             [ new Player(), new Player() ],
             [
@@ -14,7 +13,7 @@ describe("ScopaScore tests", () => {
                 []
             ]
         );
-        expect(score[0].score).to.equal(2);
-        expect(score[1].score).to.equal(0);
+        expect(score[0].score).toEqual(2);
+        expect(score[1].score).toEqual(0);
     });
 });

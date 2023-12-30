@@ -1,17 +1,16 @@
-import { expect } from "chai";
 import { RuleEngine } from "./RuleEngine";
 import { PlayCardValidationResult } from "./PlayCardValidationResult";
 import { Card } from "../models/Card";
 import { Face } from "../models/Face";
 import { Suit } from "../models/Suit";
 
+let _ruleEngine: RuleEngine;
+
+beforeEach(() => {
+    _ruleEngine = new RuleEngine();
+});
+
 describe("RuleEngine tests", () => {
-    let _ruleEngine: RuleEngine;
-
-    beforeEach(() => {
-        _ruleEngine = new RuleEngine();
-    });
-
     describe("validPlay", () => {
         it(`Attempt to take card that is not on the table - ${PlayCardValidationResult.TABLE_MISSING_REQUESTED_CARDS} result`, () => {
             const cardToPlay = new Card(Face.Ace, Suit.Clubs);
@@ -19,7 +18,7 @@ describe("RuleEngine tests", () => {
             const otherCard = new Card(Face.Five, Suit.Clubs);
             const cardsOnTable = [ otherCard ]
             const result = _ruleEngine.validPlay(cardToPlay, [ cardToTake ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.TABLE_MISSING_REQUESTED_CARDS);
+            expect(result).toEqual(PlayCardValidationResult.TABLE_MISSING_REQUESTED_CARDS);
         });
 
         it(`taking - exact - match between card played and card requested - ${PlayCardValidationResult.OK}`, () => {
@@ -28,7 +27,7 @@ describe("RuleEngine tests", () => {
             const otherCard = new Card(Face.Five, Suit.Clubs);
             const cardsOnTable = [ cardToTake, otherCard ]
             const result = _ruleEngine.validPlay(cardToPlay, [ cardToTake ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.OK);
+            expect(result).toEqual(PlayCardValidationResult.OK);
         });
 
         it(`taking - exact - face values don't match - ${PlayCardValidationResult.FACE_VALUES_DO_NOT_MATCH}`, () => {
@@ -37,7 +36,7 @@ describe("RuleEngine tests", () => {
             const otherCard = new Card(Face.Five, Suit.Clubs);
             const cardsOnTable = [ cardToTake, otherCard ]
             const result = _ruleEngine.validPlay(cardToPlay, [ cardToTake ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.FACE_VALUES_DO_NOT_MATCH);
+            expect(result).toEqual(PlayCardValidationResult.FACE_VALUES_DO_NOT_MATCH);
         });
 
         it(`taking - many - face value matches sum of face values and no exact match is on the table - ${PlayCardValidationResult.OK}`, () => {
@@ -46,7 +45,7 @@ describe("RuleEngine tests", () => {
             const card2 = new Card(Face.Two, Suit.Coins);
             const cardsOnTable = [ card1, card2 ]
             const result = _ruleEngine.validPlay(cardToPlay, [ card1, card2 ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.OK);
+            expect(result).toEqual(PlayCardValidationResult.OK);
         });
 
         it(`taking - many - sum of face values ok, but there is an exact match is on the table - ${PlayCardValidationResult.CANNOT_TAKE_MANY_BECAUSE_EXACT_MATCH_ON_TABLE}`, () => {
@@ -56,7 +55,7 @@ describe("RuleEngine tests", () => {
             const card3 = new Card(Face.Three, Suit.Coins);
             const cardsOnTable = [ card1, card2, card3 ]
             const result = _ruleEngine.validPlay(cardToPlay, [ card1, card2 ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.CANNOT_TAKE_MANY_BECAUSE_EXACT_MATCH_ON_TABLE);
+            expect(result).toEqual(PlayCardValidationResult.CANNOT_TAKE_MANY_BECAUSE_EXACT_MATCH_ON_TABLE);
         });
 
         it(`taking - many - card played face value doesn't match sum of face values requested - ${PlayCardValidationResult.FACE_VALUES_DO_NOT_MATCH}`, () => {
@@ -65,7 +64,7 @@ describe("RuleEngine tests", () => {
             const card2 = new Card(Face.Five, Suit.Coins);
             const cardsOnTable = [ card1, card2 ]
             const result = _ruleEngine.validPlay(cardToPlay, [ card1, card2 ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.FACE_VALUES_DO_NOT_MATCH);
+            expect(result).toEqual(PlayCardValidationResult.FACE_VALUES_DO_NOT_MATCH);
         });
 
         it(`playing - attempt to play card without taking - ${PlayCardValidationResult.OK}`, () => {
@@ -74,7 +73,7 @@ describe("RuleEngine tests", () => {
             const card2 = new Card(Face.Two, Suit.Coins);
             const cardsOnTable = [ card1, card2 ]
             const result = _ruleEngine.validPlay(cardToPlay, [ ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.OK);
+            expect(result).toEqual(PlayCardValidationResult.OK);
         });
 
         it(`playing - attempt to play card without taking when a sum match is available - ${PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS}`, () => {
@@ -83,7 +82,7 @@ describe("RuleEngine tests", () => {
             const card2 = new Card(Face.Two, Suit.Coins);
             const cardsOnTable = [ card1, card2 ]
             const result = _ruleEngine.validPlay(cardToPlay, [ ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS);
+            expect(result).toEqual(PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS);
         });
 
         it(`playing - attempt to play card without taking when an exact match is available - ${PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS}`, () => {
@@ -91,24 +90,24 @@ describe("RuleEngine tests", () => {
             const card1 = new Card(Face.Three, Suit.Coins);
             const cardsOnTable = [ card1 ]
             const result = _ruleEngine.validPlay(cardToPlay, [ ], cardsOnTable);
-            expect(result).to.equal(PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS);
+            expect(result).toEqual(PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS);
         });
     });
 
     describe("isScopa", () => {
-        it("isScopa is true when table is cleared", () => {
+        test("isScopa is true when table is cleared", () => {
             const isScopa = _ruleEngine.isScopa([new Card(Face.Ace, Suit.Clubs)], [] );
-            expect(isScopa).to.be.true;
+            expect(isScopa).toBeTruthy();
         });
 
-        it("isScopa is false when table no card is taken", () => {
+        test("isScopa is false when table no card is taken", () => {
             const isScopa = _ruleEngine.isScopa([], [new Card(Face.Ace, Suit.Clubs)] );
-            expect(isScopa).not.to.be.true;
+            expect(isScopa).not.toBeTruthy();
         });
 
-        it("isScopa is false when table is not cleared", () => {
+        test("isScopa is false when table is not cleared", () => {
             const isScopa = _ruleEngine.isScopa([new Card(Face.Ace, Suit.Clubs)], [new Card(Face.Two, Suit.Clubs)] );
-            expect(isScopa).not.to.be.true;
+            expect(isScopa).not.toBeTruthy();
         });
     });
 });

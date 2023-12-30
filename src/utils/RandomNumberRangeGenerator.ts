@@ -1,5 +1,3 @@
-"use strict";
-
 export class RandomNumberRangeGenerator {
     static generateRange(scale: number): number[] {
         const result: number[] = [];

@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { ComparableArray } from "./ComparableArray";
 import { Comparable } from "./Comparable";
 
@@ -22,36 +21,36 @@ describe("ComparableArray tests", function () {
             it(`${testData.expected} when comparing [${testData.set}] to [${testData.superset}]`, () => {
                 const set = testData.set.map(i => new ComparableMock(i));
                 const superset = testData.superset.map(i => new ComparableMock(i));
-                expect(ComparableArray.allMatch(set, superset)).to.equal(testData.expected)
+                expect(ComparableArray.allMatch(set, superset)).toEqual(testData.expected)
             });
         });
     });
 
     describe("findItem()", () => {
-        it("finds item when it is in the set", () => {
+        test("finds item when it is in the set", () => {
             const item = new ComparableMock(1);
             const set = [1, 2].map(i => new ComparableMock(i));
-            expect(ComparableArray.findItem(item, set)).not.to.be.undefined;
+            expect(ComparableArray.findItem(item, set)).not.toBeUndefined()
         });
 
-        it("throws when item is not in the set", () => {
+        test("throws when item is not in the set", () => {
             const item = new ComparableMock(3);
             const set = [1, 2].map(i => new ComparableMock(i));
-            expect(() => ComparableArray.findItem(item, set)).to.throw;
+            expect(() => ComparableArray.findItem(item, set)).toThrow();
         });
     });
 
     describe("hasItem()", () => {
-        it("has item is true when it is in the set", () => {
+        test("has item is true when it is in the set", () => {
             const item = new ComparableMock(1);
             const set = [1, 2].map(i => new ComparableMock(i));
-            expect(ComparableArray.hasItem(item, set)).to.be.true;
+            expect(ComparableArray.hasItem(item, set)).toBeTruthy();
         });
 
-        it("has item is false when item is not in the set", () => {
+        test("has item is false when item is not in the set", () => {
             const item = new ComparableMock(3);
             const set = [1, 2].map(i => new ComparableMock(i));
-            expect(ComparableArray.hasItem(item, set)).to.be.false;
+            expect(ComparableArray.hasItem(item, set)).toBeFalsy();
         });
     });
 
@@ -64,7 +63,7 @@ describe("ComparableArray tests", function () {
             it(`${testData.expected} when comparing [${testData.set}] to [${testData.superset}]`, () => {
                 const set = testData.set.map(i => new ComparableMock(i));
                 const superset = testData.superset.map(i => new ComparableMock(i));
-                expect(ComparableArray.isSubset(set, superset)).to.equal(testData.expected)
+                expect(ComparableArray.isSubset(set, superset)).toEqual(testData.expected)
             });
         });
     });

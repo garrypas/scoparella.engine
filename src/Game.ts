@@ -1,5 +1,3 @@
-"use strict";
-
 import { Deck } from "./models/Deck";
 import { GameConfig } from "./GameConfig";
 import { GameStatus } from "./models/GameStatus";

@@ -3,7 +3,6 @@ import { Card } from "./Card";
 import { Face } from "./Face";
 import { Suit } from "./Suit";
 import { Player } from "./Player";
-import { expect } from "chai";
 import { ComparableArray } from "../core/ComparableArray";
 
 describe("MoveLogItem tests", () => {
@@ -37,28 +36,28 @@ describe("MoveLogItem tests", () => {
                     }
                 });
 
-                it("serializes/deserializes length is correct", () =>
-                    expect(_moveLogItemAfter).to.have.lengthOf(_moveLogItem.length));
+                test("serializes/deserializes length is correct", () =>
+                    expect(_moveLogItemAfter).toHaveLength(_moveLogItem.length));
 
-                it("serializes/deserializes cards", () =>
+                test("serializes/deserializes cards", () =>
                     _moveLogItemAfter.forEach((_, i) =>
-                        expect(_moveLogItemAfter[i].card?.equals(_moveLogItem[i].card!)).to.be.true));
+                        expect(_moveLogItemAfter[i].card?.equals(_moveLogItem[i].card!)).toBeTruthy()));
 
-                it("serializes/deserializes players", () =>
+                test("serializes/deserializes players", () =>
                     _moveLogItemAfter.forEach((_, i) =>
-                        expect(_moveLogItemAfter[i].player.equals(_moveLogItem[i].player)).to.be.true));
+                        expect(_moveLogItemAfter[i].player.equals(_moveLogItem[i].player)).toBeTruthy));
 
-                it("serializes/deserializes isScopa", () =>
+                test("serializes/deserializes isScopa", () =>
                     _moveLogItemAfter.forEach((_, i) =>
-                        expect(_moveLogItemAfter[i].isScopa).to.equal(_moveLogItem[i].isScopa)));
+                        expect(_moveLogItemAfter[i].isScopa).toEqual(_moveLogItem[i].isScopa)));
 
-                it("serializes/deserializes taken elements", () =>
+                test("serializes/deserializes taken elements", () =>
                     _moveLogItemAfter.forEach((_, i) =>
                         expect(ComparableArray.allMatch(_moveLogItemAfter[i].taken, _moveLogItem[i].taken))));
 
-                it("serializes/deserializes timestamp", () =>
+                test("serializes/deserializes timestamp", () =>
                     _moveLogItemAfter.forEach((_, i) =>
-                        expect(_moveLogItemAfter[i].timestamp).to.equals(_moveLogItem[i].timestamp)));
+                        expect(_moveLogItemAfter[i].timestamp).toEqual(_moveLogItem[i].timestamp)));
             })
         );
     });

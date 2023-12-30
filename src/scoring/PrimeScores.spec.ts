@@ -1,4 +1,3 @@
-import { expect } from "chai";
 import { Hand } from "../models/Hand";
 import { Face } from "../models/Face";
 import { Suit } from "../models/Suit";
@@ -8,7 +7,7 @@ import { PrimeScores, FACE_SCORES } from "./PrimeScores";
 
 describe("PrimeScores tests", () => {
     describe("calculateScores()", () => {
-        it("Calculates prime - tie when equal", () => {
+        test("Calculates prime - tie when equal", () => {
             const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
 
             hand1.capture([
@@ -27,11 +26,11 @@ describe("PrimeScores tests", () => {
             const scores = new PrimeScores().calculateScores([ hand1, hand2 ]);
             const hand1Score = scores.find(score => score.player.equals(hand1.player));
             const hand2Score = scores.find(score => score.player.equals(hand2.player));
-            expect(hand1Score?.score).to.equal(0);
-            expect(hand2Score?.score).to.equal(0);
+            expect(hand1Score?.score).toEqual(0);
+            expect(hand2Score?.score).toEqual(0);
         });
 
-        it("Calculates prime - awards point to player with higher score", () => {
+        test("Calculates prime - awards point to player with higher score", () => {
             const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
 
             hand1.capture([
@@ -49,8 +48,8 @@ describe("PrimeScores tests", () => {
             const scores = new PrimeScores().calculateScores([ hand1, hand2 ]);
             const hand1Score = scores.find(score => score.player.equals(hand1.player));
             const hand2Score = scores.find(score => score.player.equals(hand2.player));
-            expect(hand1Score?.score).to.equal(1);
-            expect(hand2Score?.score).to.equal(0);
+            expect(hand1Score?.score).toEqual(1);
+            expect(hand2Score?.score).toEqual(0);
         });
     });
 
@@ -67,7 +66,7 @@ describe("PrimeScores tests", () => {
             { face: Face.Knave, faceOneLower: Face.King },
             { face: Face.King, faceOneLower: null },
         ].forEach(testCase => {            
-            it("Calculates prime - tie when equal", () => {
+            test("Calculates prime - tie when equal", () => {
                 const expectedScore = FACE_SCORES.find(f => f.face === testCase.face)?.score;
                 const cards = [
                     new Card(testCase.face, Suit.Clubs),
@@ -76,17 +75,17 @@ describe("PrimeScores tests", () => {
                     cards.push(new Card(testCase.faceOneLower, Suit.Clubs))
                 }
                 const primeScore = new PrimeScores().calculatePrime(cards, Suit.Clubs);
-                expect(primeScore).to.equal(expectedScore);
+                expect(primeScore).toEqual(expectedScore);
             });
         });
 
-        it("Calculates prime - segregates by suit", () => {
+        test("Calculates prime - segregates by suit", () => {
             const cards = [
                 new Card(Face.Seven, Suit.Coins),
                 new Card(Face.Six, Suit.Clubs),
             ];
             const primeScore = new PrimeScores().calculatePrime(cards, Suit.Clubs);
-            expect(primeScore).to.equal(18);
+            expect(primeScore).toEqual(18);
         });
     });
 });

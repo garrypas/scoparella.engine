@@ -2,7 +2,6 @@ import { Game } from "../../src/Game";
 import { Player } from "../../src/models/Player";
 import { Card } from "../../src/models/Card";
 import { Hand } from "../../src/models/Hand";
-import { expect } from "chai";
 import { GameStatus } from "../../src/models/GameStatus";
 import { NotThisPlayersTurnError } from "../exceptions";
 
@@ -26,7 +25,7 @@ function determineWhichCardsIfAnyCanBeTakenWithAGivenCardInHand(cardInHand: Card
     return [];
 }
 
-describe.only("Game acceptance tests", () => {
+describe("Game acceptance tests", () => {
     let _game: Game;
     beforeEach(() => {
         _game = new Game({
@@ -43,7 +42,7 @@ describe.only("Game acceptance tests", () => {
         _game = Game.fromJson(JSON.stringify(Game.toDto(_game)));
     };
 
-    it("Play a game to conclusion", () => {
+    test("Play a game to conclusion", () => {
         const player1 = new Player();
         const player2 = new Player();
 
@@ -61,8 +60,8 @@ describe.only("Game acceptance tests", () => {
         }
 
         console.log(`Player 1 (${_game.score(_game.hands[0].player)} - ${_game.score(_game.hands[1].player)}) Player 2`);
-        expect(_game.moves).not.to.have.length.lessThan(36);
-        expect(_game.roundsPlayed).to.be.greaterThan(0);
-        expect(_game.score(_game.hands[0].player) >= 11 || _game.score(_game.hands[1].player) >= 11).to.be.true
+        expect(_game.moves.length).not.toBeLessThan(36);
+        expect(_game.roundsPlayed).toBeGreaterThan(0);
+        expect(_game.score(_game.hands[0].player) >= 11 || _game.score(_game.hands[1].player) >= 11).toBeTruthy();
     });
 });

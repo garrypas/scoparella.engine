@@ -1,31 +1,36 @@
 import { Player } from "../models/Player";
-import { expect } from "chai";
-import { IdGenerator } from "../utils/IdGenerator";
-import { createSandbox, SinonSandbox } from "sinon";
+
+let ids: string[];
+
+jest.mock("../utils/IdGenerator", () => ({
+    IdGenerator: {
+        generateId: () => ids.pop() ?? "",
+    }
+}));
+
+beforeEach(() => {
+    ids = ["p3", "p2", "p1"];
+});
+
+afterAll(() => {
+    jest.clearAllMocks();
+});
 
 describe("Player tests", () => {
-    let _sandbox: SinonSandbox;
-
-    beforeEach(() =>  _sandbox = createSandbox());
-    afterEach(() => _sandbox.restore());
-
-    it("new(id) - defined id is set", () => {
+    test("new(id) - defined id is set", () => {
         const player = new Player("xyz");
-        expect(player.id).to.equal("xyz");
+        expect(player.id).toEqual("xyz");
     })
 
     describe("generateId()", () => {
         let _player: Player;
-        const FAKE_ID = "00001111-2222-3333-4444-555566667777";
 
         beforeEach(() => {
-            _sandbox = createSandbox();
-            _sandbox.stub(IdGenerator, "generateId").callsFake(() => FAKE_ID || "");
             _player = new Player();
         });
 
-        it("Generates an Id for the player", () => {
-            expect(_player.id).to.equal(FAKE_ID);
+        test("Generates an Id for the player", () => {
+            expect(_player.id).toEqual("p1");
         });
     });
 
@@ -35,23 +40,21 @@ describe("Player tests", () => {
         let _player2: Player;
 
         beforeEach(() => {
-            const ids = ["p2", "p1", "p1"];
-            _sandbox.stub(IdGenerator, "generateId").callsFake(() => ids.pop() || "");
-            [ _player1, _player1Copy, _player2 ] = [ new Player(), new Player(), new Player() ];
+            [ _player1, _player1Copy, _player2 ] = [ new Player('p1'), new Player('p1'), new Player('p2') ];
         });
 
-        it("is true when players match", () => {
-            expect(_player1.equals(_player1Copy)).to.be.true;
+        test("is true when players match", () => {
+            expect(_player1.equals(_player1Copy)).toBeTruthy();
         });
 
-        it("is false when players do not match", () => {
-            expect(_player1.equals(_player2)).not.to.be.true;
+        test("is false when players do not match", () => {
+            expect(_player1.equals(_player2)).toBeFalsy();
         });
     });
 
-    it("fromDto/toDto() serializes/deserializes the Player instance", () => {
+    test("fromDto/toDto() serializes/deserializes the Player instance", () => {
         const player = new Player();
         const playerAfter = Player.fromDto(Player.toDto(player));
-        expect(playerAfter.id).equal(player.id);
+        expect(playerAfter.id).toEqual(player.id);
     });
 });

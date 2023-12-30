@@ -1,7 +1,6 @@
 
 import { Scoreboard } from "./Scoreboard";
 import { Player } from "../models/Player";
-import { expect } from "chai";
 import { Card } from "../models/Card";
 import { Face } from "../models/Face";
 import { Suit } from "../models/Suit";
@@ -35,82 +34,82 @@ describe("Scoreboard tests", () => {
         _sandbox.restore();
     });
 
-    it("add() adds player", () => {
+    test("add() adds player", () => {
         _scoreboard.add(new Player());
         _scoreboard.add(new Player());
-        expect(_scoreboard.length).to.equal(2);
+        expect(_scoreboard.length).toEqual(2);
     });
 
-    it("addScopa() increments scopa count", () => {
+    test("addScopa() increments scopa count", () => {
         const player = new Player();
         const card = new Card(Face.Ace, Suit.Coins);
         _scoreboard.add(player);
         _scoreboard.addScopa(player, card);
         const scopas = _scoreboard.getScopas(player);
-        expect(scopas).to.be.lengthOf(1);
+        expect(scopas).toHaveLength(1);
     });
 
-    it("addScopa() adds a point to the score", () => {
+    test("addScopa() adds a point to the score", () => {
         const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.addScopa(hand2.player, new Card(Face.Ace, Suit.Clubs));
         const scores = _scoreboard.calculateScores([ hand1, hand2 ]);
-        expect(scores[0].score).to.equal(0);
-        expect(scores[1].score).to.equal(2);
+        expect(scores[0].score).toEqual(0);
+        expect(scores[1].score).toEqual(2);
     });
 
-    it("clearScopas() clears scopas", () => {
+    test("clearScopas() clears scopas", () => {
         const player = new Player();
         const card = new Card(Face.Ace, Suit.Coins);
         _scoreboard.add(player);
         _scoreboard.addScopa(player, card);
         _scoreboard.clearScopas();
-        expect(_scoreboard.getScopas(player)).to.be.empty;
+        expect(_scoreboard.getScopas(player)).toHaveLength(0);
     });
 
-    it("calculateScore() calls score calculators", () => {
+    test("calculateScore() calls score calculators", () => {
         const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([hand1, hand2]);
-        expect(_calculateScoreSpy.calledOnce).to.be.true;
+        expect(_calculateScoreSpy.calledOnce).toBeTruthy();
     });
 
-    it("calculateScore() scores scopas", () => {
+    test("calculateScore() scores scopas", () => {
         const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([hand1, hand2]);
-        expect(_scopaScoreSpy.calledOnce).to.be.true;
+        expect(_scopaScoreSpy.calledOnce).toBeTruthy();
     });
 
-    it("calculateScore() return scores only for this round", () => {
+    test("calculateScore() return scores only for this round", () => {
         const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([ hand1, hand2 ]);
         const scoresForThisRound = _scoreboard.calculateScores([ hand1, hand2 ]);
-        expect(scoresForThisRound.find(s => s.player.equals(hand1.player))?.score).to.equal(0);
-        expect(scoresForThisRound.find(s => s.player.equals(hand2.player))?.score).to.equal(1);
+        expect(scoresForThisRound.find(s => s.player.equals(hand1.player))?.score).toEqual(0);
+        expect(scoresForThisRound.find(s => s.player.equals(hand2.player))?.score).toEqual(1);
     });
 
-    it("score() returns scores", () => {
+    test("score() returns scores", () => {
         const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([ hand1, hand2 ]);
-        expect(_scoreboard.score(hand1.player)).to.equal(0);
-        expect(_scoreboard.score(hand2.player)).to.equal(1);
+        expect(_scoreboard.score(hand1.player)).toEqual(0);
+        expect(_scoreboard.score(hand2.player)).toEqual(1);
     });
 
-    it("score() returns scores when multiple calculations have been performed", () => {
+    test("score() returns scores when multiple calculations have been performed", () => {
         const [ hand1, hand2 ] = [ new Hand(new Player()), new Hand(new Player()) ];
         _scoreboard.add(hand1.player);
         _scoreboard.add(hand2.player);
         _scoreboard.calculateScores([ hand1, hand2 ]);
         _scoreboard.calculateScores([ hand1, hand2 ]);
-        expect(_scoreboard.score(hand1.player)).to.equal(0);
-        expect(_scoreboard.score(hand2.player)).to.equal(2);
+        expect(_scoreboard.score(hand1.player)).toEqual(0);
+        expect(_scoreboard.score(hand2.player)).toEqual(2);
     });
 });
