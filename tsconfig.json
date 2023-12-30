@@ -22,6 +22,6 @@
     "**/*.spec.ts",
     "**/test-utils",
     "acceptance",
-    "jest.config.js"
+    "jest.config*"
   ]
 }

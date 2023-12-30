@@ -7,8 +7,7 @@
     "build": "rimraf dist/ && tsc",
     "build-dev": "rimraf dist/ && tsc",
     "test": "npm run build-dev && jest",
-    "acceptance": "npm run build-dev && mocha -r ts-node/register \"./**/*.acceptance.ts\"",
-    "postinstall": "npm run build"
+    "acceptance": "npm run build-dev && jest --config=jest.config.acceptance.js"
   },
   "author": "",
   "license": "ISC",
