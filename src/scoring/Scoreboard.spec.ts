@@ -7,32 +7,28 @@ import { Hand } from '../models/Hand';
 import { IScoreCalculator } from './IScoreCalculator';
 import { ScopaScore } from './ScopaScore';
 import { Score } from '../models/Score';
-import { SinonSpy, createSandbox, SinonSandbox } from 'sinon';
 
 describe('Scoreboard tests', () => {
-  let _calculateScoreSpy: SinonSpy<Hand[][], Score[]>;
   let _scoreboard: Scoreboard;
   let _scoresToReturn: number[];
-  let _scopaScoreSpy: SinonSpy<[Player[], Card[][]], Score[]>;
-  let _sandbox: SinonSandbox;
+  let _scopaScoreSpy: jest.SpyInstance;
+  let _scoreCalculator: IScoreCalculator;
 
   beforeEach(() => {
-    _sandbox = createSandbox();
     _scoresToReturn = [0, 1];
-    const scoreCalculator = {
-      calculateScores: (hands: Hand[]): Score[] => {
+    _scoreCalculator = {
+      calculateScores: jest.fn((hands: Hand[]): Score[] => {
         return hands.map(
           (hand, idx) => new Score(hand.player, _scoresToReturn[idx]),
         );
-      },
+      }),
     } as IScoreCalculator;
-    _calculateScoreSpy = _sandbox.spy(scoreCalculator, 'calculateScores');
-    _scopaScoreSpy = _sandbox.spy(ScopaScore, 'scoreScopas');
-    _scoreboard = new Scoreboard([scoreCalculator]);
+    _scopaScoreSpy = jest.spyOn(ScopaScore, 'scoreScopas');
+    _scoreboard = new Scoreboard([_scoreCalculator]);
   });
 
   afterEach(() => {
-    _sandbox.restore();
+    jest.clearAllMocks();
   });
 
   test('add() adds player', () => {
@@ -74,7 +70,7 @@ describe('Scoreboard tests', () => {
     _scoreboard.add(hand1.player);
     _scoreboard.add(hand2.player);
     _scoreboard.calculateScores([hand1, hand2]);
-    expect(_calculateScoreSpy.calledOnce).toBeTruthy();
+    expect(_scoreCalculator.calculateScores).toHaveBeenCalledTimes(1);
   });
 
   test('calculateScore() scores scopas', () => {
@@ -82,7 +78,7 @@ describe('Scoreboard tests', () => {
     _scoreboard.add(hand1.player);
     _scoreboard.add(hand2.player);
     _scoreboard.calculateScores([hand1, hand2]);
-    expect(_scopaScoreSpy.calledOnce).toBeTruthy();
+    expect(_scopaScoreSpy).toHaveBeenCalledTimes(1);
   });
 
   test('calculateScore() return scores only for this round', () => {
