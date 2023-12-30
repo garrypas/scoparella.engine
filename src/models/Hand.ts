@@ -1,82 +1,82 @@
-import { Card } from "./Card";
-import { Player } from "./Player";
-import { ComparableArray } from "../core/ComparableArray";
-import { HandDto } from "@scoparella/dtos";
-import { CardNotInPlayersHandError } from "../exceptions";
+import { Card } from './Card';
+import { Player } from './Player';
+import { ComparableArray } from '../core/ComparableArray';
+import { HandDto } from '@scoparella/dtos';
+import { CardNotInPlayersHandError } from '../exceptions';
 
 export class Hand {
-    private _cards: Card[];
-    private _player: Player;
-    private _captured: Card[];
-    
-    constructor(player: Player) {
-        this._cards = [];
-        this._player = player;
-        this._captured = [];
-    }
+  private _cards: Card[];
+  private _player: Player;
+  private _captured: Card[];
 
-    get cards(): Card[] {
-        return this._cards.slice();
-    }
+  constructor(player: Player) {
+    this._cards = [];
+    this._player = player;
+    this._captured = [];
+  }
 
-    get player(): Player {
-        return this._player;
-    }
+  get cards(): Card[] {
+    return this._cards.slice();
+  }
 
-    get captured(): Card[] {
-        return this._captured.slice();
-    }
+  get player(): Player {
+    return this._player;
+  }
 
-    add(card: Card | Card[]) {
-        if(!Array.isArray(card)) {
-            card = [card];
-        }
-        this._cards.push(...card);
-    }
+  get captured(): Card[] {
+    return this._captured.slice();
+  }
 
-    capture(card: Card | Card[]) {
-        if(!Array.isArray(card)) {
-            card = [card];
-        }
-        this._captured.push(...card);
+  add(card: Card | Card[]) {
+    if (!Array.isArray(card)) {
+      card = [card];
     }
+    this._cards.push(...card);
+  }
 
-    equals(other: Hand): boolean {
-        return this.player.id === other.player.id;
+  capture(card: Card | Card[]) {
+    if (!Array.isArray(card)) {
+      card = [card];
     }
+    this._captured.push(...card);
+  }
 
-    hasCard(cardToCheck: Card): boolean {
-        return ComparableArray.hasItem(cardToCheck, this._cards);
-    }
+  equals(other: Hand): boolean {
+    return this.player.id === other.player.id;
+  }
 
-    remove(card: Card): Card {
-        const cardToPlayIndex = this._cards.findIndex(t => t.equals(card));
-        if(cardToPlayIndex < 0) {
-            throw new CardNotInPlayersHandError(card.face, card.suit);
-        }
-        return this._cards.splice(cardToPlayIndex, 1)[0];
-    }
+  hasCard(cardToCheck: Card): boolean {
+    return ComparableArray.hasItem(cardToCheck, this._cards);
+  }
 
-    static fromDto(jsonObj: HandDto): Hand {
-        const hand = new Hand(Player.fromDto(jsonObj.player));
-        hand._captured = Card.fromDtoArray(jsonObj.captured);
-        hand._cards = Card.fromDtoArray(jsonObj.cards);
-        return hand;
+  remove(card: Card): Card {
+    const cardToPlayIndex = this._cards.findIndex((t) => t.equals(card));
+    if (cardToPlayIndex < 0) {
+      throw new CardNotInPlayersHandError(card.face, card.suit);
     }
+    return this._cards.splice(cardToPlayIndex, 1)[0];
+  }
 
-    static fromDtoArray(hands: HandDto[]): Hand[] {
-        return hands.map(this.fromDto);
-    }
+  static fromDto(jsonObj: HandDto): Hand {
+    const hand = new Hand(Player.fromDto(jsonObj.player));
+    hand._captured = Card.fromDtoArray(jsonObj.captured);
+    hand._cards = Card.fromDtoArray(jsonObj.cards);
+    return hand;
+  }
 
-    static toDto(obj: Hand): HandDto {
-        return {
-            captured: Card.toDtoArray(obj._captured),
-            cards: Card.toDtoArray(obj._cards),
-            player: Player.toDto(obj._player)
-        };
-    }
+  static fromDtoArray(hands: HandDto[]): Hand[] {
+    return hands.map(this.fromDto);
+  }
 
-    static toDtoArray(arr: Hand[]): HandDto[] {
-        return arr.map(this.toDto);
-    }
+  static toDto(obj: Hand): HandDto {
+    return {
+      captured: Card.toDtoArray(obj._captured),
+      cards: Card.toDtoArray(obj._cards),
+      player: Player.toDto(obj._player),
+    };
+  }
+
+  static toDtoArray(arr: Hand[]): HandDto[] {
+    return arr.map(this.toDto);
+  }
 }

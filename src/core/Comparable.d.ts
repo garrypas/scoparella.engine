@@ -1,3 +1,3 @@
 export interface Comparable {
-    equals(other: any): boolean;
+  equals(other: any): boolean;
 }

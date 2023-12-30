@@ -1,20 +1,27 @@
 {
-    "compilerOptions": {
-      "module": "commonjs",
-      "target": "es6",
-      "lib": [ "ES7" ],
-      "moduleResolution": "node",
-      "rootDir": "./src",
-      "outDir": "./dist",
-      "sourceMap": true,
-      "allowJs": true,
-      "noImplicitAny": true,
-      "noUnusedLocals": true,
-      "noImplicitThis": true,
-      "strictNullChecks": true,
-      "preserveConstEnums": true,
-      "suppressImplicitAnyIndexErrors": false,
-      "forceConsistentCasingInFileNames": true
-    },
-    "exclude": [ "**/node_modules", "**/dist","**/*.spec.ts", "**/test-utils", "acceptance", "jest.config.js" ]
-  }
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es6",
+    "lib": ["ES7"],
+    "moduleResolution": "node",
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "allowJs": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "preserveConstEnums": true,
+    "suppressImplicitAnyIndexErrors": false,
+    "forceConsistentCasingInFileNames": true
+  },
+  "exclude": [
+    "**/node_modules",
+    "**/dist",
+    "**/*.spec.ts",
+    "**/test-utils",
+    "acceptance",
+    "jest.config.js"
+  ]
+}
