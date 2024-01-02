@@ -39,7 +39,7 @@ export class Table {
   }
 
   flop(cards: Card[]) {
-    cards.forEach((c) => this._cards.push(c));
+    cards.forEach((card) => this._cards.push(card));
   }
 
   get length(): number {

@@ -4,7 +4,7 @@ import { getCombinations } from '../utils/getCombinations';
 import { Comparable } from '../core/Comparable';
 import { CardDto } from '@scoparella/dtos';
 
-export class Card implements Comparable {
+export class Card implements Comparable<Card> {
   private _face: Face;
   private _suit: Suit;
 
@@ -40,7 +40,9 @@ export class Card implements Comparable {
   }
 
   static sumFaces(cards: Card[]) {
-    return cards.map((c) => getFaceValue(c._face)).reduce((x, y) => x + y);
+    return cards
+      .map((card) => getFaceValue(card._face))
+      .reduce((x, y) => x + y);
   }
 
   static fromDto(jsonObj: CardDto): Card {

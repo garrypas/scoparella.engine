@@ -88,10 +88,12 @@ describe('Scoreboard tests', () => {
     scoreboard.calculateScores([hand1, hand2]);
     const scoresForThisRound = scoreboard.calculateScores([hand1, hand2]);
     expect(
-      scoresForThisRound.find((s) => s.player.equals(hand1.player))?.score,
+      scoresForThisRound.find((score) => score.player.equals(hand1.player))
+        ?.score,
     ).toEqual(0);
     expect(
-      scoresForThisRound.find((s) => s.player.equals(hand2.player))?.score,
+      scoresForThisRound.find((score) => score.player.equals(hand2.player))
+        ?.score,
     ).toEqual(1);
   });
 

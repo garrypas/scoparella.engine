@@ -2,7 +2,7 @@ import { IdGenerator } from '../utils/IdGenerator';
 import { Comparable } from '../core/Comparable';
 import { PlayerDto } from '@scoparella/dtos';
 
-export class Player implements Comparable {
+export class Player implements Comparable<Player> {
   private _id: string;
   constructor(id?: string) {
     this._id = id || IdGenerator.generateId();

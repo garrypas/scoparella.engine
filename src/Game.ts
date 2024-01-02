@@ -228,14 +228,14 @@ export class Game {
 
   private get completed(): boolean {
     const playersWithScoresOver11 = this.hands
-      .map((h) => this._scoreboard.score(h.player))
-      .filter((s) => s >= 11);
+      .map((hand) => this._scoreboard.score(hand.player))
+      .filter((score) => score >= 11);
     if (playersWithScoresOver11.length < 1) {
       return false;
     }
     return (
       playersWithScoresOver11.filter(
-        (s) => s === Math.max(...playersWithScoresOver11),
+        (score) => score === Math.max(...playersWithScoresOver11),
       ).length === 1
     );
   }

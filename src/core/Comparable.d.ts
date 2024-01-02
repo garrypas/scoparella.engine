@@ -1,3 +1,3 @@
-export interface Comparable {
-  equals(other: any): boolean;
+export interface Comparable<T> {
+  equals(other: T): boolean;
 }

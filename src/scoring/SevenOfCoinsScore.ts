@@ -11,7 +11,9 @@ export class SevenOfCoinsScore implements IScoreCalculator {
       (hand) =>
         new Score(
           hand.player,
-          hand.captured.find((c) => c.equals(new Card(Face.Seven, Suit.Coins)))
+          hand.captured.find((card) =>
+            card.equals(new Card(Face.Seven, Suit.Coins)),
+          )
             ? 1
             : 0,
         ),

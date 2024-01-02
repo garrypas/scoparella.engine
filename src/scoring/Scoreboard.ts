@@ -42,12 +42,12 @@ export class Scoreboard {
   }
 
   get players(): Player[] {
-    return this._scores.map((s) => s.player);
+    return this._scores.map((score) => score.player);
   }
 
   score(player: Player): number {
-    const thisScore: Score | undefined = this._scores.find((s) =>
-      s.player.equals(player),
+    const thisScore: Score | undefined = this._scores.find((score) =>
+      score.player.equals(player),
     );
     if (!thisScore) {
       throw new Error(
@@ -80,7 +80,7 @@ export class Scoreboard {
         ),
       ),
       ScopaScore.scoreScopas(
-        this._scores.map((s) => s.player),
+        this._scores.map((score) => score.player),
         this._scopas,
       ),
     ]);
@@ -91,9 +91,9 @@ export class Scoreboard {
   static fromDto(jsonObj: ScoreboardDto): Scoreboard {
     const scoreboard = new Scoreboard();
     scoreboard._scopas = jsonObj.scopas.map((scopaCards) =>
-      scopaCards.map((c) => Card.fromDto(c)),
+      scopaCards.map((card) => Card.fromDto(card)),
     );
-    scoreboard._scores = jsonObj.scores.map((s) => Score.fromDto(s));
+    scoreboard._scores = jsonObj.scores.map((score) => Score.fromDto(score));
     return scoreboard;
   }
 
@@ -118,7 +118,7 @@ function mergeScores(scores: Score[][]): Score[] {
     (_, i) =>
       new Score(
         scores[0][i].player,
-        scores.map((s) => s[i].score).reduce((x, y) => x + y),
+        scores.map((score) => score[i].score).reduce((x, y) => x + y),
       ),
   );
 }

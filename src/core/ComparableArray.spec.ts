@@ -1,7 +1,7 @@
 import { ComparableArray } from './ComparableArray';
 import { Comparable } from './Comparable';
 
-class ComparableMock implements Comparable {
+class ComparableMock implements Comparable<ComparableMock> {
   private num: number;
   constructor(num: number) {
     this.num = num;
