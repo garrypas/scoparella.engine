@@ -2,12 +2,12 @@ import { ComparableArray } from './ComparableArray';
 import { Comparable } from './Comparable';
 
 class ComparableMock implements Comparable {
-  private _num: number;
+  private num: number;
   constructor(num: number) {
-    this._num = num;
+    this.num = num;
   }
   equals(other: ComparableMock): boolean {
-    return other._num === this._num;
+    return other.num === this.num;
   }
 }
 

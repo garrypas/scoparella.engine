@@ -4,10 +4,10 @@ import { Card } from '../models/Card';
 import { Face } from '../models/Face';
 import { Suit } from '../models/Suit';
 
-let _ruleEngine: RuleEngine;
+let ruleEngine: RuleEngine;
 
 beforeEach(() => {
-  _ruleEngine = new RuleEngine();
+  ruleEngine = new RuleEngine();
 });
 
 describe('RuleEngine tests', () => {
@@ -17,7 +17,7 @@ describe('RuleEngine tests', () => {
       const cardToTake = new Card(Face.Ace, Suit.Coins);
       const otherCard = new Card(Face.Five, Suit.Clubs);
       const cardsOnTable = [otherCard];
-      const result = _ruleEngine.validPlay(
+      const result = ruleEngine.validPlay(
         cardToPlay,
         [cardToTake],
         cardsOnTable,
@@ -32,7 +32,7 @@ describe('RuleEngine tests', () => {
       const cardToTake = new Card(Face.Ace, Suit.Coins);
       const otherCard = new Card(Face.Five, Suit.Clubs);
       const cardsOnTable = [cardToTake, otherCard];
-      const result = _ruleEngine.validPlay(
+      const result = ruleEngine.validPlay(
         cardToPlay,
         [cardToTake],
         cardsOnTable,
@@ -45,7 +45,7 @@ describe('RuleEngine tests', () => {
       const cardToTake = new Card(Face.Six, Suit.Coins);
       const otherCard = new Card(Face.Five, Suit.Clubs);
       const cardsOnTable = [cardToTake, otherCard];
-      const result = _ruleEngine.validPlay(
+      const result = ruleEngine.validPlay(
         cardToPlay,
         [cardToTake],
         cardsOnTable,
@@ -58,7 +58,7 @@ describe('RuleEngine tests', () => {
       const card1 = new Card(Face.Ace, Suit.Coins);
       const card2 = new Card(Face.Two, Suit.Coins);
       const cardsOnTable = [card1, card2];
-      const result = _ruleEngine.validPlay(
+      const result = ruleEngine.validPlay(
         cardToPlay,
         [card1, card2],
         cardsOnTable,
@@ -72,7 +72,7 @@ describe('RuleEngine tests', () => {
       const card2 = new Card(Face.Two, Suit.Coins);
       const card3 = new Card(Face.Three, Suit.Coins);
       const cardsOnTable = [card1, card2, card3];
-      const result = _ruleEngine.validPlay(
+      const result = ruleEngine.validPlay(
         cardToPlay,
         [card1, card2],
         cardsOnTable,
@@ -87,7 +87,7 @@ describe('RuleEngine tests', () => {
       const card1 = new Card(Face.Two, Suit.Coins);
       const card2 = new Card(Face.Five, Suit.Coins);
       const cardsOnTable = [card1, card2];
-      const result = _ruleEngine.validPlay(
+      const result = ruleEngine.validPlay(
         cardToPlay,
         [card1, card2],
         cardsOnTable,
@@ -100,7 +100,7 @@ describe('RuleEngine tests', () => {
       const card1 = new Card(Face.Ace, Suit.Coins);
       const card2 = new Card(Face.Two, Suit.Coins);
       const cardsOnTable = [card1, card2];
-      const result = _ruleEngine.validPlay(cardToPlay, [], cardsOnTable);
+      const result = ruleEngine.validPlay(cardToPlay, [], cardsOnTable);
       expect(result).toEqual(PlayCardValidationResult.OK);
     });
 
@@ -109,7 +109,7 @@ describe('RuleEngine tests', () => {
       const card1 = new Card(Face.Ace, Suit.Coins);
       const card2 = new Card(Face.Two, Suit.Coins);
       const cardsOnTable = [card1, card2];
-      const result = _ruleEngine.validPlay(cardToPlay, [], cardsOnTable);
+      const result = ruleEngine.validPlay(cardToPlay, [], cardsOnTable);
       expect(result).toEqual(
         PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS,
       );
@@ -119,7 +119,7 @@ describe('RuleEngine tests', () => {
       const cardToPlay = new Card(Face.Three, Suit.Clubs);
       const card1 = new Card(Face.Three, Suit.Coins);
       const cardsOnTable = [card1];
-      const result = _ruleEngine.validPlay(cardToPlay, [], cardsOnTable);
+      const result = ruleEngine.validPlay(cardToPlay, [], cardsOnTable);
       expect(result).toEqual(
         PlayCardValidationResult.CANNOT_LAY_CARD_MATCH_EXISTS,
       );
@@ -128,17 +128,17 @@ describe('RuleEngine tests', () => {
 
   describe('isScopa', () => {
     test('isScopa is true when table is cleared', () => {
-      const isScopa = _ruleEngine.isScopa([new Card(Face.Ace, Suit.Clubs)], []);
+      const isScopa = ruleEngine.isScopa([new Card(Face.Ace, Suit.Clubs)], []);
       expect(isScopa).toBeTruthy();
     });
 
     test('isScopa is false when table no card is taken', () => {
-      const isScopa = _ruleEngine.isScopa([], [new Card(Face.Ace, Suit.Clubs)]);
+      const isScopa = ruleEngine.isScopa([], [new Card(Face.Ace, Suit.Clubs)]);
       expect(isScopa).not.toBeTruthy();
     });
 
     test('isScopa is false when table is not cleared', () => {
-      const isScopa = _ruleEngine.isScopa(
+      const isScopa = ruleEngine.isScopa(
         [new Card(Face.Ace, Suit.Clubs)],
         [new Card(Face.Two, Suit.Clubs)],
       );

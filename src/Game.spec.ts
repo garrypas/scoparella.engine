@@ -13,23 +13,23 @@ import {
   CardsNotOnTableError,
 } from './exceptions';
 
-let _takeValidationResult: PlayCardValidationResult;
-let _isScopaResult: boolean;
-let _ruleEngine: RuleEngine;
-let _gameBuilder: GameBuilder;
+let takeValidationResult: PlayCardValidationResult;
+let isScopaResult: boolean;
+let ruleEngine: RuleEngine;
+let gameBuilder: GameBuilder;
 
 const _isScopaSpy = jest
   .spyOn(RuleEngine.prototype, 'isScopa')
-  .mockImplementation(() => _isScopaResult);
+  .mockImplementation(() => isScopaResult);
 const _validTakeSpy = jest
   .spyOn(RuleEngine.prototype, 'validPlay')
-  .mockImplementation(() => _takeValidationResult);
+  .mockImplementation(() => takeValidationResult);
 
 beforeEach(() => {
-  _takeValidationResult = PlayCardValidationResult.OK;
-  _isScopaResult = false;
-  _ruleEngine = new RuleEngine();
-  _gameBuilder = new GameBuilder().withRuleEngine(_ruleEngine);
+  takeValidationResult = PlayCardValidationResult.OK;
+  isScopaResult = false;
+  ruleEngine = new RuleEngine();
+  gameBuilder = new GameBuilder().withRuleEngine(ruleEngine);
 });
 
 afterEach(() => {
@@ -38,32 +38,32 @@ afterEach(() => {
 
 describe('Game tests', () => {
   test('Not ready when there are not enough players', () => {
-    const game = _gameBuilder.addOnePlayer().build();
+    const game = gameBuilder.addOnePlayer().build();
     expect(game.status).toEqual(GameStatus.WAITING_FOR_PLAYERS);
   });
 
   test('In progress when cards have been dealt but some are on the deck', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(game.status).toEqual(GameStatus.IN_PROGRESS);
   });
 
   test('In progress when all cards have been dealt but some are on the table', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(game.status).toEqual(GameStatus.IN_PROGRESS);
   });
 
   test('Not ended when cards remain in hand', () => {
-    const game = _gameBuilder.addTwoPlayers().playHands(17).build();
+    const game = gameBuilder.addTwoPlayers().playHands(17).build();
     expect(game.status).not.toEqual(GameStatus.ENDED);
   });
 
   test('In progress when all cards are dealt and none are on the table but round is not complete', () => {
-    const game = _gameBuilder.addTwoPlayers().playToEnd().build();
+    const game = gameBuilder.addTwoPlayers().playToEnd().build();
     expect(game.status).toEqual(GameStatus.IN_PROGRESS);
   });
 
   test('Still in progress when all cards are dealt and none are on the table and round is complete', () => {
-    const game = _gameBuilder
+    const game = gameBuilder
       .addTwoPlayers()
       .playToEnd()
       .gameCompleted()
@@ -72,46 +72,46 @@ describe('Game tests', () => {
   });
 
   test('When round is ended the first player is rotated for the next round', () => {
-    const game = _gameBuilder.addTwoPlayers().playToEnd().build();
+    const game = gameBuilder.addTwoPlayers().playToEnd().build();
     expect(game.whoseTurn?.equals(game.hands[0])).not.toBeTruthy();
     expect(game.whoseTurn?.equals(game.hands[1])).toBeTruthy();
   });
 
   test('When round is ended the number of rounds played is increased by 1', () => {
-    const game = _gameBuilder.addTwoPlayers().playToEnd().build();
+    const game = gameBuilder.addTwoPlayers().playToEnd().build();
     expect(game.roundsPlayed).toEqual(1);
   });
 
   test('When round is not ended the number of rounds played is not increased', () => {
-    const game = _gameBuilder.addTwoPlayers().playHands(17).build();
+    const game = gameBuilder.addTwoPlayers().playHands(17).build();
     expect(game.roundsPlayed).toEqual(0);
   });
 
   test('Returns scores', () => {
-    const game = _gameBuilder.addTwoPlayers().playToEnd().build();
+    const game = gameBuilder.addTwoPlayers().playToEnd().build();
     expect(game.score(game.hands[0].player)).not.toBeUndefined();
     expect(game.score(game.hands[1].player)).not.toBeUndefined();
   });
 
   test('When round is ended the deck is replenished ready for the next game', () => {
-    const game = _gameBuilder.addTwoPlayers().playToEnd().build();
+    const game = gameBuilder.addTwoPlayers().playToEnd().build();
     expect(game.deck).toHaveLength(30);
   });
 
   test('When game is ended cards are dealt to each player ready for the next round', () => {
-    const game = _gameBuilder.addTwoPlayers().playToEnd().build();
+    const game = gameBuilder.addTwoPlayers().playToEnd().build();
     expect(game.hands[0].cards).toHaveLength(3);
     expect(game.hands[1].cards).toHaveLength(3);
   });
 
   test('When game is ended captured cards are reset to zero', () => {
-    const game = _gameBuilder.addTwoPlayers().playToEnd().build();
+    const game = gameBuilder.addTwoPlayers().playToEnd().build();
     expect(game.hands[0].captured).toHaveLength(0);
     expect(game.hands[1].captured).toHaveLength(0);
   });
 
   test('Gives cards remaining on table to the last taker', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
 
     for (let i = 0; i < 18; i++) {
       game.tryPlayCards(game.hands[0].cards[0], [], game.hands[0]);
@@ -129,7 +129,7 @@ describe('Game tests', () => {
   });
 
   test('Gives adds table awarded to last taker at the end of a round to the move log', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
 
     for (let i = 0; i < 18; i++) {
       game.tryPlayCards(game.hands[0].cards[0], [], game.hands[0]);
@@ -149,48 +149,48 @@ describe('Game tests', () => {
   });
 
   test('Deals 3 cards to each player once the game is ready to begin', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(game.hands[0].cards).toHaveLength(3);
     expect(game.hands[1].cards).toHaveLength(3);
   });
 
   test('Leaves 30 cards on the deck once cards have been dealt to players at the start of the game', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(game.deck.cards).toHaveLength(30);
   });
 
   test('Flops 4 cards on the table at the start of the game', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(game.table.cards).toHaveLength(4);
   });
 
   test('When game is ready to start player 1 goes first', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(game.whoseTurn).toEqual(game.hands[0]);
   });
 
   test('Player cannot play until it is their turn', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(() =>
       game.tryPlayCards(game.hands[1].cards[0], [], game.hands[1]),
     ).toThrow(NotThisPlayersTurnError);
   });
 
   test('Moves turn to next player', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     game.tryPlayCards(game.hands[0].cards[0], [], game.hands[0]);
     expect(game.whoseTurn?.equals(game.hands[1])).toBeTruthy();
   });
 
   test('Moves turn to first player when last player has gone', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     game.tryPlayCards(game.hands[0].cards[0], [], game.hands[0]);
     game.tryPlayCards(game.hands[1].cards[0], [], game.hands[1]);
     expect(game.whoseTurn?.equals(game.hands[0])).toBeTruthy();
   });
 
   test('Takes requested cards when request is valid', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     game.tryPlayCards(game.hands[0].cards[0], [], game.hands[0]);
 
     const knightOfCups = game.hands[1].cards[2];
@@ -204,7 +204,7 @@ describe('Game tests', () => {
   });
 
   test('Fails to take requested cards when they are not on the table', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(() =>
       game.tryPlayCards(
         game.hands[0].cards[0],
@@ -215,7 +215,7 @@ describe('Game tests', () => {
   });
 
   test('Puts card on table if it cannot be used to capture', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     const kingOfClubs = game.hands[0].cards[0];
     game.tryPlayCards(kingOfClubs, [], game.hands[0]);
     expect(game.hands[1].cards).not.toContain(kingOfClubs);
@@ -223,7 +223,7 @@ describe('Game tests', () => {
   });
 
   test('Throws error when trying to add more players than the maximum number the game can accept', () => {
-    const game = _gameBuilder.addTwoPlayers().build();
+    const game = gameBuilder.addTwoPlayers().build();
     expect(() => game.addPlayer(new Player())).toThrow(
       CannotAddMorePlayersError,
     );
@@ -240,26 +240,26 @@ describe('Game tests', () => {
   });
 
   test("Deals next round when each player's hand is empty", () => {
-    const game = _gameBuilder.addTwoPlayers().playSingleRound().build();
+    const game = gameBuilder.addTwoPlayers().playSingleRound().build();
     expect(game.deck).toHaveLength(24);
     expect(game.hands[0].cards).toHaveLength(3);
     expect(game.hands[1].cards).toHaveLength(3);
   });
 
   test('Checks for scopa after each card is played', () => {
-    _gameBuilder.addTwoPlayers().playSingleRound().build();
+    gameBuilder.addTwoPlayers().playSingleRound().build();
     expect(_isScopaSpy).toHaveBeenCalledTimes(6);
   });
 
   test('If round results in a scopa the scopa is counted', () => {
-    _isScopaResult = true;
-    const game = _gameBuilder.addTwoPlayers().playSingleRound().build();
+    isScopaResult = true;
+    const game = gameBuilder.addTwoPlayers().playSingleRound().build();
     expect(game.scopas(game.hands[0].player)).toHaveLength(3);
     expect(game.scopas(game.hands[1].player)).toHaveLength(3);
   });
 
   test('Checks if move is valid', () => {
-    _gameBuilder.addTwoPlayers().playSingleRound().build();
+    gameBuilder.addTwoPlayers().playSingleRound().build();
     expect(_validTakeSpy).toHaveBeenCalledTimes(6);
   });
 
@@ -268,7 +268,7 @@ describe('Game tests', () => {
     let _cards1: Card[], _cards2: Card[];
     let _table: Card[];
     beforeEach(() => {
-      const builder = _gameBuilder.addTwoPlayers().playHands(0);
+      const builder = gameBuilder.addTwoPlayers().playHands(0);
 
       _game = builder.preBuild();
       _cards1 = _game.hands[0].cards;
@@ -307,8 +307,8 @@ describe('Game tests', () => {
   });
 
   test('Throws and error if move is not valid', () => {
-    _takeValidationResult = PlayCardValidationResult.INVALID;
-    const game = _gameBuilder.addTwoPlayers().build();
+    takeValidationResult = PlayCardValidationResult.INVALID;
+    const game = gameBuilder.addTwoPlayers().build();
     expect(() =>
       game.tryPlayCards(
         game.hands[0].cards[0],
@@ -319,7 +319,7 @@ describe('Game tests', () => {
   });
 
   test('JSON serialization/deserialization', () => {
-    const gameBefore = _gameBuilder.addTwoPlayers().playHands(2).build();
+    const gameBefore = gameBuilder.addTwoPlayers().playHands(2).build();
     let gameAfter: Game = Game.fromDto(Game.toDto(gameBefore));
     gameAfter = Game.fromJson(Game.toJson(gameAfter));
     expect(gameAfter.deck).not.toBeUndefined();

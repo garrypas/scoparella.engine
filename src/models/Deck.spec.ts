@@ -16,10 +16,10 @@ jest.mock('../utils/RandomNumberRangeGenerator', () => ({
 }));
 
 describe('Deck tests', function () {
-  let _deck: Deck;
+  let deck: Deck;
 
   beforeEach(() => {
-    _deck = new Deck();
+    deck = new Deck();
   });
 
   afterEach(() => {
@@ -27,35 +27,35 @@ describe('Deck tests', function () {
   });
 
   test('Has 40 cards on initialization', () => {
-    expect(_deck.length).toEqual(40);
+    expect(deck.length).toEqual(40);
   });
 
   test('Takes cards', () => {
-    const card1 = _deck.take()[0];
+    const card1 = deck.take()[0];
     expect(card1.face).toEqual(Face.King);
     expect(card1.suit).toEqual(Suit.Clubs);
-    expect(_deck.length).toEqual(39);
+    expect(deck.length).toEqual(39);
 
-    _deck.take(4);
-    expect(_deck.length).toEqual(35);
+    deck.take(4);
+    expect(deck.length).toEqual(35);
 
-    const card2 = _deck.take()[0];
+    const card2 = deck.take()[0];
     expect(card2.face).toEqual(Face.Knight);
     expect(card2.suit).toEqual(Suit.Cups);
-    expect(_deck.length).toEqual(34);
+    expect(deck.length).toEqual(34);
   });
 
   describe('fromDto/toDto() serializes/deserializes the Deck instance', () => {
     let _deckAfter: Deck;
     beforeEach(() => {
-      _deck.take(10);
-      _deckAfter = Deck.fromDto(Deck.toDto(_deck));
+      deck.take(10);
+      _deckAfter = Deck.fromDto(Deck.toDto(deck));
     });
 
     test('cards serialized/deserialized', () => {
       expect(_deckAfter).toHaveLength(30);
       expect(
-        ComparableArray.allMatch(_deck.cards, _deckAfter.cards),
+        ComparableArray.allMatch(deck.cards, _deckAfter.cards),
       ).toBeTruthy();
     });
   });

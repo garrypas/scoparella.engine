@@ -6,17 +6,13 @@ import { Suit } from './Suit';
 import { ComparableArray } from '../core/ComparableArray';
 
 let ids: string[];
-let _player1: Player;
-let _player1Copy: Player;
-let _player2: Player;
+let player1: Player;
+let player1Copy: Player;
+let player2: Player;
 
 beforeEach(() => {
   ids = ['p2', 'p1', 'p1'];
-  [_player1, _player1Copy, _player2] = [
-    new Player(),
-    new Player(),
-    new Player(),
-  ];
+  [player1, player1Copy, player2] = [new Player(), new Player(), new Player()];
 });
 
 afterEach(() => {
@@ -34,25 +30,25 @@ describe('Hand tests', function () {
     beforeEach(() => {});
 
     test('is true when players match', () => {
-      const [hand1, hand2] = [new Hand(_player1), new Hand(_player1Copy)];
+      const [hand1, hand2] = [new Hand(player1), new Hand(player1Copy)];
       expect(hand1.equals(hand2)).toBeTruthy();
     });
 
     test('is false when players do not match', () => {
-      const [hand1, hand2] = [new Hand(_player1), new Hand(_player2)];
+      const [hand1, hand2] = [new Hand(player1), new Hand(player2)];
       expect(hand1.equals(hand2)).toBeFalsy();
     });
   });
 
   describe('hasCard()', () => {
     test('true when hand contains card', () => {
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.add(new Card(Face.Ace, Suit.Clubs));
       expect(hand.hasCard(new Card(Face.Ace, Suit.Clubs))).toBeTruthy();
     });
 
     test('false when hand does not contain card', () => {
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.add(new Card(Face.Ace, Suit.Clubs));
       expect(hand.hasCard(new Card(Face.Three, Suit.Clubs))).not.toBeTruthy();
     });
@@ -60,7 +56,7 @@ describe('Hand tests', function () {
 
   describe('remove()', () => {
     test("removes the card from the player's hand", () => {
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.add(new Card(Face.Ace, Suit.Clubs));
       hand.remove(new Card(Face.Ace, Suit.Clubs));
       expect(hand.cards).toHaveLength(0);
@@ -71,14 +67,14 @@ describe('Hand tests', function () {
         new Card(Face.Ace, Suit.Clubs),
         new Card(Face.Two, Suit.Clubs),
       ];
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.add([card1, card2]);
       const removed = hand.remove(card1);
       expect(removed.equals(card1)).toBeTruthy();
     });
 
     test("Throws error if the card isn't in the player's hand", () => {
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       expect(() => hand.remove(new Card(Face.Ace, Suit.Clubs))).toThrow();
     });
   });
@@ -92,7 +88,7 @@ describe('Hand tests', function () {
         new Card(Face.Two, Suit.Clubs),
         new Card(Face.Five, Suit.Clubs),
       ];
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.add([_card1, _card2]);
       hand.capture(card3);
       _handAfter = Hand.fromDto(Hand.toDto(hand));
@@ -110,7 +106,7 @@ describe('Hand tests', function () {
     });
 
     test('player serialized/deserialized', () => {
-      expect(_handAfter.player.equals(_player1)).toBeTruthy();
+      expect(_handAfter.player.equals(player1)).toBeTruthy();
     });
   });
 
@@ -126,17 +122,17 @@ describe('Hand tests', function () {
         new Card(Face.Five, Suit.Clubs),
       ];
 
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.add([_card1, _card2]);
       hand.capture(_card3);
 
-      _player2 = new Player();
+      player2 = new Player();
       [_card4, _card5, _card6] = [
         new Card(Face.Ace, Suit.Coins),
         new Card(Face.Two, Suit.Coins),
         new Card(Face.Five, Suit.Coins),
       ];
-      const hand2 = new Hand(_player2);
+      const hand2 = new Hand(player2);
       hand2.add([_card4]);
       hand2.capture([_card5, _card6]);
 
@@ -166,20 +162,20 @@ describe('Hand tests', function () {
     });
 
     test('player serialized/deserialized', () => {
-      expect(_handsAfter[0].player.equals(_player1)).toBeTruthy();
-      expect(_handsAfter[1].player.equals(_player2)).toBeTruthy();
+      expect(_handsAfter[0].player.equals(player1)).toBeTruthy();
+      expect(_handsAfter[1].player.equals(player2)).toBeTruthy();
     });
   });
 
   describe('capture()', () => {
     test('captures single', () => {
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.capture(new Card(Face.Ace, Suit.Clubs));
       expect(hand.captured).toHaveLength(1);
     });
 
     test('captures many', () => {
-      const hand = new Hand(_player1);
+      const hand = new Hand(player1);
       hand.capture([
         new Card(Face.Ace, Suit.Clubs),
         new Card(Face.Ace, Suit.Coins),

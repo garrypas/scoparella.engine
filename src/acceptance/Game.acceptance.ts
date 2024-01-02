@@ -35,9 +35,9 @@ function determineWhichCardsIfAnyCanBeTakenWithAGivenCardInHand(
 }
 
 describe('Game acceptance tests', () => {
-  let _game: Game;
+  let game: Game;
   beforeEach(() => {
-    _game = new Game({
+    game = new Game({
       numberOfPlayers: 2,
     });
   });
@@ -47,25 +47,25 @@ describe('Game acceptance tests', () => {
     const cardsThatCanBeTaken =
       determineWhichCardsIfAnyCanBeTakenWithAGivenCardInHand(
         card,
-        _game.table.cards,
+        game.table.cards,
       );
-    _game.tryPlayCards(card, cardsThatCanBeTaken, hand);
+    game.tryPlayCards(card, cardsThatCanBeTaken, hand);
     // Go through serialization loop to ensure game does not depend on object
     // references that might break during serialization/deserialization:
-    _game = Game.fromJson(JSON.stringify(Game.toDto(_game)));
+    game = Game.fromJson(JSON.stringify(Game.toDto(game)));
   };
 
   test('Play a game to conclusion', () => {
     const player1 = new Player();
     const player2 = new Player();
 
-    _game.addPlayer(player1);
-    _game.addPlayer(player2);
+    game.addPlayer(player1);
+    game.addPlayer(player2);
 
-    while (_game.status !== GameStatus.ENDED) {
+    while (game.status !== GameStatus.ENDED) {
       for (let i = 0; i < 36; i++) {
-        if (_game.whoseTurn) {
-          playCard(_game.whoseTurn);
+        if (game.whoseTurn) {
+          playCard(game.whoseTurn);
           continue;
         }
         throw new NotThisPlayersTurnError();
@@ -73,15 +73,15 @@ describe('Game acceptance tests', () => {
     }
 
     console.log(
-      `Player 1 (${_game.score(_game.hands[0].player)} - ${_game.score(
-        _game.hands[1].player,
+      `Player 1 (${game.score(game.hands[0].player)} - ${game.score(
+        game.hands[1].player,
       )}) Player 2`,
     );
-    expect(_game.moves.length).not.toBeLessThan(36);
-    expect(_game.roundsPlayed).toBeGreaterThan(0);
+    expect(game.moves.length).not.toBeLessThan(36);
+    expect(game.roundsPlayed).toBeGreaterThan(0);
     expect(
-      _game.score(_game.hands[0].player) >= 11 ||
-        _game.score(_game.hands[1].player) >= 11,
+      game.score(game.hands[0].player) >= 11 ||
+        game.score(game.hands[1].player) >= 11,
     ).toBeTruthy();
   });
 });

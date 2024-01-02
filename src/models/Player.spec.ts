@@ -23,24 +23,24 @@ describe('Player tests', () => {
   });
 
   describe('generateId()', () => {
-    let _player: Player;
+    let player: Player;
 
     beforeEach(() => {
-      _player = new Player();
+      player = new Player();
     });
 
     test('Generates an Id for the player', () => {
-      expect(_player.id).toEqual('p1');
+      expect(player.id).toEqual('p1');
     });
   });
 
   describe('equals()', () => {
-    let _player1: Player;
-    let _player1Copy: Player;
-    let _player2: Player;
+    let player1: Player;
+    let player1Copy: Player;
+    let player2: Player;
 
     beforeEach(() => {
-      [_player1, _player1Copy, _player2] = [
+      [player1, player1Copy, player2] = [
         new Player('p1'),
         new Player('p1'),
         new Player('p2'),
@@ -48,11 +48,11 @@ describe('Player tests', () => {
     });
 
     test('is true when players match', () => {
-      expect(_player1.equals(_player1Copy)).toBeTruthy();
+      expect(player1.equals(player1Copy)).toBeTruthy();
     });
 
     test('is false when players do not match', () => {
-      expect(_player1.equals(_player2)).toBeFalsy();
+      expect(player1.equals(player2)).toBeFalsy();
     });
   });
 
