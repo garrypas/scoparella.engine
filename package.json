@@ -1,5 +1,5 @@
 {
-  "name": "scoparella.engine",
+  "name": "@garrypas/scoparella.engine",
   "version": "1.7.0",
   "description": "",
   "main": "dist/index.js",
@@ -28,6 +28,9 @@
     "uuid": "^8.2.0"
   },
   "types": "src/index.ts",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "files": [
     "README.md",
     "dist",
