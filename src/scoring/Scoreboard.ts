@@ -7,10 +7,16 @@ import { CoinScores } from './CoinScores';
 import { NumberOfCardsScore } from './NumberOfCardsScore';
 import { IScoreCalculator } from './IScoreCalculator';
 import { ScopaScore } from './ScopaScore';
+import { PrimeScores } from './PrimeScores';
 import { ScoreboardDto } from '@scoparella/dtos';
 
 function createScoreCalculators(): IScoreCalculator[] {
-  return [new NumberOfCardsScore(), new CoinScores(), new SevenOfCoinsScore()];
+  return [
+    new NumberOfCardsScore(),
+    new CoinScores(),
+    new SevenOfCoinsScore(),
+    new PrimeScores(),
+  ];
 }
 
 export class Scoreboard {

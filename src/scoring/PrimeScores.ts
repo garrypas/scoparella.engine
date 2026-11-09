@@ -21,13 +21,27 @@ export const FACE_SCORES = [
 
 export class PrimeScores implements IScoreCalculator {
   calculateScores(hands: Hand[]): Score[] {
-    return CardScoringComparison.compareCounts(hands, (captured) => {
-      const coinsPrime = this.calculatePrime(captured, Suit.Coins);
-      const cupsPrime = this.calculatePrime(captured, Suit.Cups);
-      const swordsPrime = this.calculatePrime(captured, Suit.Swords);
-      const clubsPrime = this.calculatePrime(captured, Suit.Clubs);
-      return coinsPrime + cupsPrime + swordsPrime + clubsPrime;
-    });
+    const eligibleHands = hands.filter((hand) =>
+      Object.values(Suit).every((suit) =>
+        hand.captured.some((card) => card.suit === suit),
+      ),
+    );
+    const eligibleScores = CardScoringComparison.compareCounts(
+      eligibleHands,
+      (captured) => {
+        const coinsPrime = this.calculatePrime(captured, Suit.Coins);
+        const cupsPrime = this.calculatePrime(captured, Suit.Cups);
+        const swordsPrime = this.calculatePrime(captured, Suit.Swords);
+        const clubsPrime = this.calculatePrime(captured, Suit.Clubs);
+        return coinsPrime + cupsPrime + swordsPrime + clubsPrime;
+      },
+    );
+
+    return hands.map(
+      (hand) =>
+        eligibleScores.find((score) => score.player.equals(hand.player)) ||
+        new Score(hand.player, 0),
+    );
   }
 
   calculatePrime(cards: Card[], suit: Suit): number {

@@ -41,6 +41,10 @@ export class Hand {
     this._captured.push(...card);
   }
 
+  clearCaptured() {
+    this._captured = [];
+  }
+
   equals(other: Hand): boolean {
     return this.player.id === other.player.id;
   }

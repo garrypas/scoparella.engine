@@ -243,6 +243,9 @@ export class Game {
   private endRound() {
     this._roundsPlayed++;
     if (!this.completed) {
+      this._hands.forEach((hand) => hand.clearCaptured());
+      this._scoreboard.clearScopas();
+      this._lastTaker = undefined;
       this.moveTurnToNextPlayer();
       this._deck = new Deck();
       this.start();

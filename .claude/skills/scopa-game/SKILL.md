@@ -57,7 +57,7 @@ The common target is 11 points; a player/team must reach or exceed it and lead o
 
 Offer practical principles, not guaranteed plays; the best move depends on the table, hand, remaining cards, and local rules.
 
-- **Prioritize multi-category cards.** In common Scopa, the Seven of Coins contributes to the settebello, coins majority, and primiera, so securing it can affect several scoring categories. Other high primiera cards—especially sevens, sixes, and aces—are valuable too. This engine's default scoreboard does not currently score primiera; see the implementation notes below.
+- **Prioritize multi-category cards.** In common Scopa and this engine, the Seven of Coins contributes to the settebello, coins majority, and primiera, so securing it can affect several scoring categories. Other high primiera cards—especially sevens, sixes, and aces—are valuable too.
 - **Track the scoring race.** Keep a rough count of captured cards and coins, and note high primiera cards already taken. A category already secured may change which capture is most valuable.
 - **Compare capture sets.** If multiple sum sets are legal, consider the cards you gain, the cards you leave, whether you create an opponent's exact or sum capture, and whether you can empty the table for a scopa. The exact-match rule overrides a sum set.
 - **Manage the table you leave.** When forced to lay a card, avoid creating an easy opponent sweep or a valuable capture where possible. Consider both individual table-card values and combinations that sum to cards likely still in opponents' hands.
@@ -79,17 +79,14 @@ Implemented behavior:
 - `src/Game.ts` starts each game with three cards per player and four cards on the table. It deals three more to each player when their hands are empty and the deck still has cards. At the end of the final deal, it removes remaining table cards and gives them to `_lastTaker` if one is set.
 - `GameConfig.numberOfPlayers` is caller-supplied. The README documents 2–4 players, but the engine does not validate that range; scoring and turns treat each `Player` separately, with no team abstraction.
 - `src/rules/RuleEngine.ts` requires requested cards to be on the table, enforces exact-match priority over sum captures, and prevents laying the played card when that card has an exact or sum capture. Capture legality is based on the card being played, not whether another card in hand could capture.
-- The default `Scoreboard` awards points for most captured cards, most Coins, the Seven of Coins, and recorded scopas. It does **not** include the implemented `PrimeScores` calculator, despite the README listing primiera. Do not describe primiera as part of default engine scoring.
+- The default `Scoreboard` awards points for most captured cards, most Coins, the Seven of Coins, primiera, and recorded scopas. Primiera uses the common scale above, requires at least one captured card in each suit, and is awarded only to a unique eligible leader.
+- On a non-terminal deal transition, `Game.endRound()` clears captured cards and scopas for the next deal, preserves cumulative scores, and resets `_lastTaker`. If the game ends, final captured cards remain available.
 - `Game.completed` ends the game when at least one player has 11 or more points and there is a unique highest score among players at or above 11. Otherwise, `endRound()` starts another deal.
 
 Potential implementation bugs/deviations to flag, not repair unless explicitly asked:
 
-- **Top-score ties:** `CardScoringComparison.getMost()` suppresses points only when every player ties. If two or more players tie for the highest count while another player has less, all top-tied players receive a point. Common Scopa awards no point for a tie for most cards, Coins, or primiera.
-- **Incomplete primiera eligibility:** Although `PrimeScores` is not used by the default scoreboard, its implementation assigns zero for a missing suit and still compares the total. Common rules generally require a card in every suit to compete for primiera.
 - **Final-play scopa:** `Game` checks for a scopa immediately after applying a move and before checking whether the deal has ended. Thus, a final-card sweep is recorded and scored, unlike the common rule described above.
-- **Captured cards across deals:** When `endRound()` starts another deal, it does not clear each `Hand.captured`. The next round's card/coin scoring therefore sees cards from earlier rounds again, potentially scoring the same captured cards repeatedly.
-- **Last taker across deals:** `_lastTaker` is not reset when a new deal starts. Remaining table cards can therefore be assigned to the previous deal's last taker if the current deal has no new capture.
-- **Scopa counter reset:** `ScopaScore.scoreScopas()` removes at most `scopas.length` entries from each player's scopa list (`scopas.length` is the number of players). If a player records more scopas than there are players, excess entries remain and may be scored again.
+- **Scopa-score reset:** `ScopaScore.scoreScopas()` removes at most `scopas.length` entries from each player's scopa list (`scopas.length` is the number of players). `Game.endRound()` explicitly clears scopas before continuing, but if a player records more scopas than there are players, a terminal game can still expose leftover entries through `Game.scopas()`. Direct repeated use of the scorer or `Scoreboard.calculateScores()` can also retain and rescore excess entries.
 - **No last taker:** `giveTableToLastTaker()` removes all remaining table cards even if `_lastTaker` is undefined, in which case those cards are not assigned to a player's captured pile.
 
 When implementing or reviewing a rule change, locate the current code and tests first. State whether a discrepancy is observed behavior or a suspected bug. Add tests for the requested behavior and boundary cases, but do not fix unrelated discrepancies without authorization.

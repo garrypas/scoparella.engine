@@ -41,8 +41,7 @@ export class CardScoringComparison {
     const handsWithMost = handReduced.filter(
       (item) => scoreFunction(item.itemsOfInterest) === highestValue,
     );
-    const isTie = handsWithMost.length === hands.length;
-    if (!isTie) {
+    if (handsWithMost.length === 1) {
       return handsWithMost.map((item) => item.hand);
     }
     return [];

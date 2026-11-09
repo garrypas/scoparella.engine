@@ -37,6 +37,30 @@ describe('Scoreboard tests', () => {
     expect(scoreboard.length).toEqual(2);
   });
 
+  test('default scoreboard awards primiera to the hand with the highest prime', () => {
+    const defaultScoreboard = new Scoreboard();
+    const [hand1, hand2] = [new Hand(new Player()), new Hand(new Player())];
+    hand1.capture([
+      new Card(Face.Seven, Suit.Cups),
+      new Card(Face.Seven, Suit.Swords),
+      new Card(Face.Seven, Suit.Clubs),
+      new Card(Face.King, Suit.Coins),
+    ]);
+    hand2.capture([
+      new Card(Face.Six, Suit.Cups),
+      new Card(Face.Six, Suit.Swords),
+      new Card(Face.Six, Suit.Clubs),
+      new Card(Face.Six, Suit.Coins),
+    ]);
+    defaultScoreboard.add(hand1.player);
+    defaultScoreboard.add(hand2.player);
+
+    const scores = defaultScoreboard.calculateScores([hand1, hand2]);
+
+    expect(scores[0].score).toEqual(1);
+    expect(scores[1].score).toEqual(0);
+  });
+
   test('addScopa() increments scopa count', () => {
     const player = new Player();
     const card = new Card(Face.Ace, Suit.Coins);

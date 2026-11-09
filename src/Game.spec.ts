@@ -104,31 +104,28 @@ describe('Game tests', () => {
     expect(game.hands[1].cards).toHaveLength(3);
   });
 
-  test('When game is ended captured cards are reset to zero', () => {
-    const game = gameBuilder.addTwoPlayers().playToEnd().build();
+  test('When a new deal starts captured cards and the last taker are reset', () => {
+    const game = gameBuilder.addTwoPlayers().build();
+    const firstHand = game.hands[0];
+    const firstPlayedCard = firstHand.cards[0];
+    const firstCapturedCard = game.table.cards[0];
+    game.tryPlayCards(firstPlayedCard, [firstCapturedCard], firstHand);
+
+    while (game.roundsPlayed === 0) {
+      const hand = game.whoseTurn;
+      if (!hand) {
+        throw new NotThisPlayersTurnError();
+      }
+      game.tryPlayCards(hand.cards[0], [], hand);
+    }
+
+    expect(game.moves[0].taken).toContain(firstCapturedCard);
     expect(game.hands[0].captured).toHaveLength(0);
     expect(game.hands[1].captured).toHaveLength(0);
+    expect(game.lastTaker).toBeUndefined();
   });
 
-  test('Gives cards remaining on table to the last taker', () => {
-    const game = gameBuilder.addTwoPlayers().build();
-
-    for (let i = 0; i < 18; i++) {
-      game.tryPlayCards(game.hands[0].cards[0], [], game.hands[0]);
-      if (i === 0) {
-        const [knightOfCups, knightOfSwords] = [
-          game.hands[1].cards[2],
-          game.table.cards[0],
-        ];
-        game.tryPlayCards(knightOfCups, [knightOfSwords], game.hands[1]);
-      } else {
-        game.tryPlayCards(game.hands[1].cards[0], [], game.hands[1]);
-      }
-    }
-    expect(game.hands[1].captured).toHaveLength(40);
-  });
-
-  test('Gives adds table awarded to last taker at the end of a round to the move log', () => {
+  test('Records cards awarded to the last taker at the end of a round', () => {
     const game = gameBuilder.addTwoPlayers().build();
 
     for (let i = 0; i < 18; i++) {
@@ -146,6 +143,9 @@ describe('Game tests', () => {
     expect(game.moves).toHaveLength(37);
     expect(game.moves[game.moves.length - 1].taken).toHaveLength(38);
     expect(game.moves[game.moves.length - 1].card).toBeNull();
+    expect(
+      game.moves[game.moves.length - 1].player.equals(game.hands[1].player),
+    ).toBeTruthy();
   });
 
   test('Deals 3 cards to each player once the game is ready to begin', () => {
